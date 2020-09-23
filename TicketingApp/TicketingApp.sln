@@ -4,8 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketingApp", "TicketingApp\TicketingApp.csproj", "{6808C39A-6503-463B-B961-03BB8A45C4DA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02} = {3B77C9C1-1429-4B03-A1FC-526DE24CBA02}
+	EndProjectSection
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Database.sqlproj", "{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DatabaseOld", "Database\DatabaseOld.sqlproj", "{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "G:\PROGRAMMER\DOTNETCORE\WebTentalel\Database\Database.sqlproj", "{C4336930-56DF-4241-84C8-D31CB33E4D94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +28,12 @@ Global
 		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C4336930-56DF-4241-84C8-D31CB33E4D94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4336930-56DF-4241-84C8-D31CB33E4D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4336930-56DF-4241-84C8-D31CB33E4D94}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C4336930-56DF-4241-84C8-D31CB33E4D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4336930-56DF-4241-84C8-D31CB33E4D94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4336930-56DF-4241-84C8-D31CB33E4D94}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

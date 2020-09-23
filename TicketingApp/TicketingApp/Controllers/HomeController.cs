@@ -6,20 +6,22 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TicketingApp.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace TicketingApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IConfiguration _configuration;
+        public HomeController(IConfiguration configuration)
         {
-            _logger = logger;
+            _configuration = configuration;
         }
-
+       
         public IActionResult Index()
         {
+            string Db = _configuration.GetConnectionString("Db");
             return View();
         }
 
