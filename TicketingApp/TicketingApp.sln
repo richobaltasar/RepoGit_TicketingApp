@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketingApp", "TicketingAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POS App", "Desktop\Ewats App\POS App.csproj", "{57366703-9E9F-463F-83BB-37CE87EF976D}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Database.sqlproj", "{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		G:\PROGRAMMER\DOTNETCORE\TERP\SharedCode\SharedCode.projitems*{57366703-9e9f-463f-83bb-37ce87ef976d}*SharedItemsImports = 4
@@ -24,6 +26,12 @@ Global
 		{57366703-9E9F-463F-83BB-37CE87EF976D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57366703-9E9F-463F-83BB-37CE87EF976D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57366703-9E9F-463F-83BB-37CE87EF976D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B77C9C1-1429-4B03-A1FC-526DE24CBA02}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
