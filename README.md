@@ -1,2 +1,2 @@
 # RepoGit_TicketingApp
-Test penggunaan Pull
+Ayoo pasti bisa buat lebih baik
