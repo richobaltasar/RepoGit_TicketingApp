@@ -184,10 +184,6 @@
     <Compile Include="InsertLicense.Designer.cs">
       <DependentUpon>InsertLicense.cs</DependentUpon>
     </Compile>
-    <Compile Include="Login.cs" />
-    <Compile Include="Login.Designer.cs">
-      <DependentUpon>Login.cs</DependentUpon>
-    </Compile>
     <Compile Include="LoginV2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -591,9 +587,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InsertLicense.resx">
       <DependentUpon>InsertLicense.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Login.resx">
-      <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginV2.resx">
       <DependentUpon>LoginV2.cs</DependentUpon>
