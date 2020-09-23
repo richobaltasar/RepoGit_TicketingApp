@@ -5,12 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Admin\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\Database\DatabaseOld.sqlproj" />
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0-msbuild2-final" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <None Include="wwwroot\assets\jquery-sparkline\jquery.charts-sparkline.js" />
+  </ItemGroup>
 </Project>

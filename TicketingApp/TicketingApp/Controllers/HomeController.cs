@@ -22,6 +22,7 @@ namespace TicketingApp.Controllers
         public IActionResult Index()
         {
             string Db = _configuration.GetConnectionString("Db");
+
             return View();
         }
 
