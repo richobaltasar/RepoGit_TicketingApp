@@ -84,29 +84,6 @@
 
     <script type="text/javascript">
 
-        showPage = form => {
-            try {
-                $.ajax({
-                    type: 'POST',
-                    url: form.action,
-                    data: new FormData(form),
-                    contentType: false,
-                    processData: false,
-                    success: function (res) {
-                        console.log(res);
-                        $('#view-page').html(res.html);
-                        $.notify('deleted Successfully', { globalPosition: 'top center', className: 'danger' })
-                    },
-                    error: function (err) {
-                        console.log(err)
-                    }
-                })
-            } catch (ex) {
-                console.log(ex)
-            }
-            return false;
-        }
-        
     </script>
 
 </body>

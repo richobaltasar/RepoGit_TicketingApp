@@ -8,6 +8,7 @@ using DeviceDetectorNET.Parser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using TicketingApp.Function;
+using System.Diagnostics;
 
 namespace TicketingApp.Controllers
 {
@@ -25,6 +26,7 @@ namespace TicketingApp.Controllers
 
         public async Task<IActionResult> ModuleData()
         {
+            var model = new ModuleDataModel();
             HttpContext.Session.SetString("_UserId", GF.GenID());
             try
             {
@@ -35,16 +37,17 @@ namespace TicketingApp.Controllers
 
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("_UserId")))
                 {
-                    var model = new alertLogin();
-                    return await Task.Run(() => RedirectToAction("SignIn", "Home", model));
+                    var model2 = new alertLogin();
+                    return await Task.Run(() => RedirectToAction("SignIn", "Home", model2));
                 }
                 else
                 {
                     ViewBag.Device = result.Match.DeviceType.ToString();
                     Console.WriteLine(ViewBag.Device);
 
-                    var model = new ModuleDataModel();
+                    
                     model.ListData = await f.ModuleData_Get();
+
                     return await Task.Run(() => View(model));
                 }
             }
@@ -52,8 +55,10 @@ namespace TicketingApp.Controllers
             {
                 var Error = new ErrorViewModel();
                 Error.MessageContent = ex.ToString();
-                Error.MessageTitle = "Error ModuleData Function";
-                return RedirectToAction("Error", "Home", Error);
+                Error.MessageTitle = "Error ";
+                Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = Error;
+                return await Task.Run(() => View(model));
             }
         }
         

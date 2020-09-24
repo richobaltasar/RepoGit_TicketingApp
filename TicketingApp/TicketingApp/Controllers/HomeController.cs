@@ -53,8 +53,9 @@ namespace TicketingApp.Controllers
             {
                 var Error = new ErrorViewModel();
                 Error.MessageContent = ex.ToString();
-                Error.MessageTitle = "Error SignIn Function";
-                return RedirectToAction("Error", "Home");
+                Error.MessageTitle = "Error ";
+                Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                return await Task.Run(() => View());
             }
         }
 
@@ -74,11 +75,9 @@ namespace TicketingApp.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public async Task<IActionResult> Error(ErrorViewModel Log)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return await Task.Run(() => View(Log));
         }
-
-
     }
 }

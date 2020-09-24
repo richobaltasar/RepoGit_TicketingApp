@@ -8,6 +8,7 @@ namespace TicketingApp.Models
     public class ModuleDataModel
     {
         public List<ModuleData> ListData { get; set; }
+        public ErrorViewModel Error { get; set; }
     }
     public class ModuleData
     {

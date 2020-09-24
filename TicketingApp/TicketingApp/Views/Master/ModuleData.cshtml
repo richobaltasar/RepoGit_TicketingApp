@@ -5,22 +5,31 @@
 }
 
 @model ModuleDataModel
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+@{
+    if (Model.Error == null)
+    {
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
-<script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+        <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
 
-<div class="row">
-    <div class="col-12">
-        <div class="card rounded">
-            <div class="card-body">
-                <div class="m-t-0">
-                    <div id="view-all">
-                        @await Html.PartialAsync("ModuleData_Table",Model)
+        <div class="row">
+            <div class="col-12">
+                <div class="card rounded">
+                    <div class="card-body">
+                        <div class="m-t-0">
+                            <div id="view-all">
+                                @await Html.PartialAsync("ModuleData_Table", Model)
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    }
+    else
+    {
+        @await Html.PartialAsync("Error", Model.Error)
+    }
+}
