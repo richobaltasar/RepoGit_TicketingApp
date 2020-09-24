@@ -8,25 +8,23 @@ using DeviceDetectorNET.Parser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using TicketingApp.Function;
-using System.Diagnostics;
 
 namespace TicketingApp.Controllers
 {
-    public class HomeController : Controller
+    public class MasterController : Controller
     {
         GlobalFunction GF = new GlobalFunction();
-        
+        MasterFunction f = new MasterFunction();
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _env;
-        public HomeController(IConfiguration configuration, IWebHostEnvironment env)
+        public MasterController(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
             _env = env;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> ModuleData()
         {
-            Config.ConStr = _configuration.GetConnectionString("Db");
             HttpContext.Session.SetString("_UserId", GF.GenID());
             try
             {
@@ -37,48 +35,27 @@ namespace TicketingApp.Controllers
 
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("_UserId")))
                 {
-                    //return RedirectToAction("SignIn", "Home");
-                    var model = new LoginContent();
-                    model.Alert = null;
-                    return await Task.Run(() => RedirectToAction("SignIn", "Home",model));
+                    var model = new alertLogin();
+                    return await Task.Run(() => RedirectToAction("SignIn", "Home", model));
                 }
                 else
                 {
                     ViewBag.Device = result.Match.DeviceType.ToString();
                     Console.WriteLine(ViewBag.Device);
-                    return await Task.Run(() => View());
+
+                    var model = new ModuleDataModel();
+                    model.ListData = await f.ModuleData_Get();
+                    return await Task.Run(() => View(model));
                 }
             }
             catch (Exception ex)
             {
                 var Error = new ErrorViewModel();
                 Error.MessageContent = ex.ToString();
-                Error.MessageTitle = "Error SignIn Function";
-                return RedirectToAction("Error", "Home");
+                Error.MessageTitle = "Error ModuleData Function";
+                return RedirectToAction("Error", "Home", Error);
             }
         }
-
-        public async Task<IActionResult> SignIn(LoginContent data)
-        {
-            return await Task.Run(() => View(data));
-        }
-
-        public async Task<IActionResult> ChatApp()
-        {
-            return await Task.Run(() => View());
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-
+        
     }
 }

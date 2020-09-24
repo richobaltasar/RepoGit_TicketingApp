@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Http;
+
 
 namespace TicketingApp
 {
@@ -23,7 +25,19 @@ namespace TicketingApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddSession(options =>
+            {
+                // Set the timeout for session values
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.Name = ".Tentakel.Session";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
             services.AddControllersWithViews();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +59,7 @@ namespace TicketingApp
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,0 +1,76 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model ModuleDataModel
+
+<table id="myTable"
+       class="display no-wrap table table-hover table-striped table-bordered compact"
+       cellspacing="0">
+    <thead class="bg-dark text-light">
+        <tr>
+            <th width="30">no</th>
+            <th style="text-align:center;">NamaModule</th>
+            <th style="text-align:center;">Action</th>
+            <th style="text-align:center;">Controller</th>
+            <th style="text-align:center;">Img</th>
+            <th style="text-align:center;">Status</th>
+            <th style="text-align:center;">
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int a = 0;
+            foreach (var item in Model.ListData)
+            {
+                a++;
+                <tr>
+                    <td nowrap align="center">@a</td>
+                    <td nowrap align="left">@item.NamaModule</td>
+                    <td nowrap align="left">@item.Action</td>
+                    <td nowrap align="left">@item.Controller</td>
+                    <td nowrap align="center">
+                        <img src="../../@item.Img" style="max-width:32px;" />
+                    </td>
+                    <td nowrap align="center">@item.Status</td>
+                    <td nowrap align="center">
+                        @{
+                            <button onclick="showInPopup('@Url.Action("FormMasterCRUD","Master",new { id=item.IdModul},Context.Request.Scheme)','Form Master - Ubah Data')"
+                                    class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
+                                    title="View">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <form asp-action="Delete" asp-route-id="@item.IdModul" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
+                                <button type="submit"
+                                        class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
+                                        title="View">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+        $(function () {
+            $('#myTable').DataTable({
+                "info": false,
+                "scrollX": true,
+                "searching": false,
+                responsive: true,
+                "autoWidth": false,
+                "paging": false,
+                scrollY: "50vh",
+                scrollX: !0,
+                scrollCollapse: !0,
+                iDisplayLength: 100,
+                searching: true
+            });
+        });
+</script>
