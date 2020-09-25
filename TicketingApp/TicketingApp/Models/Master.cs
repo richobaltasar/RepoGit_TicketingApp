@@ -18,6 +18,8 @@ namespace TicketingApp.Models
         public string Controller { get; set; }
         public string Img { get; set; }
         public string Status { get; set; }
+
+        public ErrorViewModel Error { get; set; }
     }
 
     public class FormMasterData

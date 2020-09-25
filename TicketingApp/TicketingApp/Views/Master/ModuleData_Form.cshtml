@@ -2,6 +2,33 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    Layout = "";
+    MasterFunction f = new MasterFunction();
+    var formData = new FormMasterData();
 }
-
+@model ModuleData
+@{
+    if (Model.Error == null)
+    {
+        <form>
+            @{
+                formData.Template = f.GetFormLayout("Form Master CRUD");
+                formData.ColField = 3;
+                if(Model != null)
+                {
+                    formData.dbContext = Model;
+                }
+                @await Html.PartialAsync("_LayoutForm", formData)
+                <hr />
+                <button type="submit" class="btn btn-outline-info" style="float:right;">
+                    <span class="fa fa-save"></span> Save
+                </button>
+            }
+        </form>
+    }
+    else
+    {
+        @await Html.PartialAsync("Error", Model.Error)
+    }
+}
 

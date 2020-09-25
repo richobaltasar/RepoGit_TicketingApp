@@ -16,6 +16,9 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
         <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js" integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew==" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css" integrity="sha512-EZSUkJWTjzDlspOoPSpUFR0o0Xy7jdzW//6qhUkoZ9c4StFkVsp9fbbd0O06p9ELS3H486m4wmrCELjza4JEog==" crossorigin="anonymous" />
+
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
                 <h4 class="text-themecolor">Dashboard 4</h4>
@@ -26,36 +29,46 @@
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
                         <li class="breadcrumb-item active">Dashboard 4</li>
                     </ol>
-                    <button type="button" class="btn btn-info d-none d-lg-block m-l-15"
-                            onclick="showInPopup('@Url.Action("JenisTicket_Form","Ticketing",new { id=0},Context.Request.Scheme)','Form Jenis Ticket - Tambah Data')">
-                        <i class="fa fa-plus-circle"></i> Create New
-                    </button>
-                    <button type="button" class="btn btn-outline-info d-none d-lg-block m-l-15"
-                            data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        <i class="fa fa-filter"></i> Set Filter
-                    </button>
                 </div>
             </div>
         </div>
-        <div class="accordion" id="accordionExample" style="margin-top:0px;">
-            <div class="card">
-                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                        @{
-                            formData.Template = f.GetFormLayoutForFilter("Form Master CRUD");
-                            formData.ColField = 3;
-                            @await Html.PartialAsync("_LayoutFormFilter", formData)
-                        }
-                        <hr />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="margin-top:-20px;">
+        
+        <div class="row">
             <div class="col-12">
                 <div class="card rounded">
+                    <div class="card-header">
+                        <button type="button" class="btn btn-info m-l-15"
+                                style="float:right"
+                                onclick="showInPopup('@Url.Action("ModuleData_Form","Master",new { id=0},Context.Request.Scheme)','Form Modul Data')">
+                            <i class="fa fa-plus-circle"></i> Create New
+                        </button>
+                        <button type="button" class="btn btn-outline-info m-l-15"
+                                style="float:right"
+                                data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <i class="fa fa-filter"></i> Set Filter
+                        </button>
+                    </div>
                     <div class="card-body">
-                        <div class="m-t-0">
+                        <div class="accordion" id="accordionExample" style="margin-top:0px;">
+                            <div class="card">
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <form>
+                                            @{
+                                                formData.Template = f.GetFormLayoutForFilter("Form Master CRUD");
+                                                formData.ColField = 3;
+                                                @await Html.PartialAsync("_LayoutFormFilter", formData)
+                                                <button type="submit" class="btn waves-effect waves-light btn-rounded btn-outline-primary">
+                                                    <span class="fa fa-search"></span> Search
+                                                </button>
+                                            }
+                                        </form>
+                                        <hr />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:-30px;">
                             <div id="view-all">
                                 @await Html.PartialAsync("ModuleData_Table", Model)
                             </div>
@@ -64,20 +77,33 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal" role="dialog" id="form-modal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-info" style="padding: 10px 10px 10px 10px;">
+                        <p class="modal-title text-white">Modal title</p>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
             showInPopup = (url, title) => {
-                $(".preloader").fadeIn();
+
                 $.ajax({
                     type: 'GET',
                     url: url,
                     success: function (res) {
                         console.log(res);
-                        $(".preloader").fadeOut();
                         $('#form-modal .modal-body').html(res);
                         $('#form-modal .modal-title').html(title);
                         $('#form-modal').modal('show');
-
-
                     },
                     error: function (request, status, error) {
                         $(".preloader").fadeOut();

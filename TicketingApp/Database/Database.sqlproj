@@ -1099,10 +1099,6 @@
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
-    <Build Include="dbo\Stored Procedures\SP_web_old\SP_GetListDataMasterTemplate.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
     <Build Include="dbo\Stored Procedures\SP_web_old\SP_GetListTenant.sql">
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
@@ -2172,10 +2168,11 @@
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="dbo\Stored Procedures\SP_Desktop\SP_ModuleData_Get.sql" />
-    <None Include="Scripts\ScriptsIgnoredOnImport.sql" />
+    <None Include="Scripts\Insert Data Master Form.sql" />
     <Build Include="dbo\Tables\TableMaster\Master_Form.sql" />
     <Build Include="dbo\Tables\DataLog\DataInventory.sql" />
     <Build Include="dbo\Tables\Master_ListItem.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\SP_ModuleData_Get_ById.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />
@@ -2183,5 +2180,8 @@
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="Scripts\Test.sql" />
   </ItemGroup>
 </Project>

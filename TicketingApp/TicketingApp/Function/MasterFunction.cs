@@ -44,7 +44,7 @@ namespace TicketingApp.Function
                                 {
                                     if (null != p && p.CanWrite)
                                     {
-                                        if (p.Name != "")
+                                        if (p.Name != "" && p.Name != "Error")
                                         {
                                             p.SetValue(d, reader[p.Name].ToString(), null);
                                         }
@@ -113,6 +113,48 @@ namespace TicketingApp.Function
                             while (reader.Read())
                             {
                                 
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        public async Task<ModuleData> ModuleData_GetById(int Id)
+        {
+            var res = new ModuleData();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_ModuleData_Get_ById @Id="+Id+"" +
+                        "";
+
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                Type type = res.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "" && p.Name != "Error")
+                                        {
+                                            p.SetValue(res, reader[p.Name].ToString(), null);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

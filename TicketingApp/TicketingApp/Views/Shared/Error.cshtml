@@ -2,53 +2,69 @@
 @{
     ViewData["Title"] = "Error";
 }
+<style type="text/css">
+    @@media only screen and (max-device-width : 768px) {
+        .img-responsive-width {
+            display: block;
+            height: auto;
+            max-width: 100%;
+        }
+    }
 
+    @@media only screen and (min-device-width: 768px) {
+        .img-responsive-width {
+            display: block;
+            height: auto;
+            max-width: 50%;
+            min-width: 300px;
+        }
+    }
+
+</style>
 <div class="row">
-    <div class="col-12">
-        <div class="card rounded">
-            <div class="card-body" style="text-align:center;">
-                <img src="~/images/error/dev-pusing.gif" width="400" style="float:left;" />
-                <div style="text-align:left;margin-top:40px;">
-                    <h1 class="text-danger" style="font-weight:bold;">
-                        Sorry <br />
-                        it's not you, it's US
-                    </h1>
-                    <p>
-                        An error has Occurred and we're working to fix problem! <br />
-                        We'll be up and running shortly
-                    </p>
-                    <p>
-                        If you need immediate help form our customer service team about an ongoing transaction,
-                        please <span class="text-success"><a href="#">call us</a></span>.
-                        If it isn't an urgent matter, please visit our
-                        <span class="text-success"><a href="#">Help Center</a></span>
-                        for additional information.
-                        <br />
-                        <br />
-                        Thanks for your patience!
-                    </p>
-                    <div class="accordion" id="accordionExample">
-                        <div class="card">
-                            <div class="card-header" id="headingOne" style="padding:0px 0px 0px 0px; ">
-                                <h2 class="mb-0">
-                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Error Information
-                                    </button>
-                                </h2>
-                            </div>
+    <div class="card rounded">
+        <div class="card-body" style="text-align:center;">
+            <img src="~/images/error/dev-pusing.gif" style="float:left;" class="img-responsive-width"/>
+            <div style="text-align:left;margin-top:40px;">
+                <h1 class="text-danger" style="font-weight:bold;">
+                    Sorry <br />
+                    it's not you, it's US
+                </h1>
+                <p>
+                    An error has Occurred and we're working to fix problem! <br />
+                    We'll be up and running shortly
+                </p>
+                <p>
+                    If you need immediate help form our customer service team about an ongoing transaction,
+                    please <span class="text-success"><a href="#">call us</a></span>.
+                    If it isn't an urgent matter, please visit our
+                    <span class="text-success"><a href="#">Help Center</a></span>
+                    for additional information.
+                    <br />
+                    <br />
+                    Thanks for your patience!
+                </p>
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                        <div class="card-header" id="headingOne" style="padding:0px 0px 0px 0px; ">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#ErrorInformation" aria-expanded="true" aria-controls="collapseOne">
+                                    Error Information
+                                </button>
+                            </h2>
+                        </div>
 
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                <div class="card-body">
-                                    @if (Model.ShowRequestId)
-                                    {
-                                        <p>
-                                            <strong>Request ID:</strong> <code>@Model.RequestId</code>
-                                        </p>
-                                    }
+                        <div id="ErrorInformation" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <div class="card-body">
+                                @if (Model.ShowRequestId)
+                                {
                                     <p>
-                                        @Model.MessageContent
+                                        <strong>Request ID:</strong> <code>@Model.RequestId</code>
                                     </p>
-                                </div>
+                                }
+                                <p>
+                                    @Model.MessageContent
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -56,6 +72,7 @@
             </div>
         </div>
     </div>
+    
 </div>
 
 

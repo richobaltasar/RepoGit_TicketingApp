@@ -1,0 +1,34 @@
+﻿@model FormMasterData
+<div class="row">
+    @{
+        GlobalFunction GF = new GlobalFunction();
+       
+        int a = 12 / Model.ColField;
+        foreach (var d in Model.Template)
+        {
+            if (Model.dbContext != null)
+            {
+                d.ValueInput = GF.GetPropValue(Model.dbContext, d.Id.Trim());
+            }
+
+            <div class="col-md-@a" @{if (d.ShowHide != "Show") { <text> hidden="hidden" </text>  } }>
+                <div class="form-group">
+                    <label class="control-label">
+                        @{
+                            if (d.Mandatory == "1")
+                            {
+                                @Html.Raw("*" + d.TextLabel);
+                            }
+                            else
+                            {
+                                @d.TextLabel
+                            }
+                        }
+
+                    </label>
+                    @await Html.PartialAsync("_LayoutTypeInput", d)
+                </div>
+            </div>
+        }
+    }
+</div>

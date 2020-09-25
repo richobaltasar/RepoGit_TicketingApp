@@ -27,6 +27,7 @@ namespace TicketingApp.Controllers
             _env = env;
         }
 
+        #region Module Data
         public async Task<IActionResult> ModuleData()
         {
             Config.ConStr = _configuration.GetConnectionString("Db");
@@ -62,6 +63,39 @@ namespace TicketingApp.Controllers
                 return await Task.Run(() => View(model));
             }
         }
-        
+
+        [NoDirectAccess]
+        public async Task<IActionResult> ModuleData_Form(int id = 0)
+        {
+            var model = new ModuleData();
+            try
+            {
+                if (id == 0)
+                {
+                    return await Task.Run(() => View(model));
+                }
+                else
+                {
+                    model = await f.ModuleData_GetById(id);
+
+                    if (model == null)
+                    {
+                        return NotFound();
+                    }
+                    return await Task.Run(() => View(model));
+                }
+            }
+            catch (Exception ex)
+            {
+                var Error = new ErrorViewModel();
+                Error.MessageContent = ex.ToString();
+                Error.MessageTitle = "Error ";
+                Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = Error;
+                return await Task.Run(() => View(model));
+            }
+
+        }
+        #endregion
     }
 }
