@@ -3,9 +3,9 @@
 AS
 BEGIN
 	SET NOCOUNT ON;
-	if exists(select*from ERP.dbo.Master_ListItem where ListName = @Data)
+	if exists(select*from dbo.Master_ListItem where ListName = @Data)
 	begin
-		select*from ERP.dbo.Master_ListItem where ListName = @Data
+		select*from dbo.Master_ListItem where ListName = @Data
 		order by Urutan asc
 	end
 	else

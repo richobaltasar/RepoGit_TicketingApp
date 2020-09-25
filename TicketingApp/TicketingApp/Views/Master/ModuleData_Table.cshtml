@@ -16,8 +16,6 @@
             <th style="text-align:center;">Controller</th>
             <th style="text-align:center;">Img</th>
             <th style="text-align:center;">Status</th>
-            <th style="text-align:center;">
-            </th>
         </tr>
     </thead>
     <tbody>
@@ -35,22 +33,6 @@
                         <img src="../../@item.Img" style="max-width:32px;" />
                     </td>
                     <td nowrap align="center">@item.Status</td>
-                    <td nowrap align="center">
-                        @{
-                            <button onclick="showInPopup('@Url.Action("FormMasterCRUD","Master",new { id=item.IdModul},Context.Request.Scheme)','Form Master - Ubah Data')"
-                                    class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
-                                    title="View">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <form asp-action="Delete" asp-route-id="@item.IdModul" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
-                                <button type="submit"
-                                        class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
-                                        title="View">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
-                        }
-                    </td>
                 </tr>
             }
         }
@@ -73,4 +55,6 @@
                 searching: true
             });
         });
+
+        
 </script>

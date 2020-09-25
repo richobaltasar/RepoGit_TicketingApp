@@ -8,6 +8,8 @@ using TicketingApp.Models;
 using System.Reflection;
 using System.Data.SqlClient;
 
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 namespace TicketingApp.Function
 {
     public class MasterFunction
@@ -111,6 +113,128 @@ namespace TicketingApp.Function
                             while (reader.Read())
                             {
                                 
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        #endregion
+
+        #region Master Form
+        public List<FormMaster> GetFormLayout(string Page)
+        {
+            var res = new List<FormMaster>();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "select*from Master_Form where NamaForm='" + Page + "' order by Urutan asc";
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var d = new FormMaster();
+                                Type type = d.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "")
+                                        {
+                                            p.SetValue(d, reader[p.Name].ToString(), null);
+                                        }
+                                    }
+                                }
+                                res.Add(d);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        public List<FormMaster> GetFormLayoutForFilter(string Page)
+        {
+            var res = new List<FormMaster>();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "select*from Master_Form where NamaForm='" + Page + "' and FilterBy=1 order by Urutan asc";
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var d = new FormMaster();
+                                Type type = d.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "")
+                                        {
+                                            p.SetValue(d, reader[p.Name].ToString(), null);
+                                        }
+                                    }
+                                }
+                                res.Add(d);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        #endregion
+
+        #region Master List
+        public List<SelectListItem> GetListDataMaster(string Data)
+        {
+            var res = new List<SelectListItem>();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_GetListDataMaster @Data='" + Data + "'";
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var data = new SelectListItem();
+                                data.Text = reader["Text"].ToString();
+                                data.Value = reader["Value"].ToString();
+                                res.Add(data);
                             }
                         }
                     }

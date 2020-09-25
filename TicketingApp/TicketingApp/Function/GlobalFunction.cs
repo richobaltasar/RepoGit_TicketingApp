@@ -35,7 +35,26 @@ namespace TicketingApp.Function
             byte[] shaDigest = shaAlgorithm.ComputeHash(ASCIIEncoding.ASCII.GetBytes(url));
             return BitConverter.ToString(shaDigest);
         }
+        public object GetPropValue(object source, string propertyName)
+        {
+            var property = source.GetType().GetRuntimeProperties().FirstOrDefault(p => string.Equals(p.Name, propertyName, StringComparison.OrdinalIgnoreCase));
+            if (property != null)
+            {
+                if (property.GetValue(source) != null)
+                {
+                    return property?.GetValue(source);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
 
-        
+        }
+
     }
 }

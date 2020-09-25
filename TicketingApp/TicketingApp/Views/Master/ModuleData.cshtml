@@ -2,6 +2,8 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    MasterFunction f = new MasterFunction();
+    var formData = new FormMasterData();
 }
 
 @model ModuleDataModel
@@ -14,7 +16,42 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
         <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
 
-        <div class="row">
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h4 class="text-themecolor">Dashboard 4</h4>
+            </div>
+            <div class="col-md-7 align-self-center text-right">
+                <div class="d-flex justify-content-end align-items-center">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Dashboard 4</li>
+                    </ol>
+                    <button type="button" class="btn btn-info d-none d-lg-block m-l-15"
+                            onclick="showInPopup('@Url.Action("JenisTicket_Form","Ticketing",new { id=0},Context.Request.Scheme)','Form Jenis Ticket - Tambah Data')">
+                        <i class="fa fa-plus-circle"></i> Create New
+                    </button>
+                    <button type="button" class="btn btn-outline-info d-none d-lg-block m-l-15"
+                            data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <i class="fa fa-filter"></i> Set Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="accordion" id="accordionExample" style="margin-top:0px;">
+            <div class="card">
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                        @{
+                            formData.Template = f.GetFormLayoutForFilter("Form Master CRUD");
+                            formData.ColField = 3;
+                            @await Html.PartialAsync("_LayoutFormFilter", formData)
+                        }
+                        <hr />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:-20px;">
             <div class="col-12">
                 <div class="card rounded">
                     <div class="card-body">
@@ -27,6 +64,28 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            showInPopup = (url, title) => {
+                $(".preloader").fadeIn();
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (res) {
+                        console.log(res);
+                        $(".preloader").fadeOut();
+                        $('#form-modal .modal-body').html(res);
+                        $('#form-modal .modal-title').html(title);
+                        $('#form-modal').modal('show');
+
+
+                    },
+                    error: function (request, status, error) {
+                        $(".preloader").fadeOut();
+                    }
+                });
+
+            }
+        </script>
     }
     else
     {

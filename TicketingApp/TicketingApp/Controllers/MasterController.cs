@@ -18,6 +18,9 @@ namespace TicketingApp.Controllers
         MasterFunction f = new MasterFunction();
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _env;
+
+        
+
         public MasterController(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
@@ -26,6 +29,7 @@ namespace TicketingApp.Controllers
 
         public async Task<IActionResult> ModuleData()
         {
+            Config.ConStr = _configuration.GetConnectionString("Db");
             var model = new ModuleDataModel();
             HttpContext.Session.SetString("_UserId", GF.GenID());
             try
@@ -44,10 +48,7 @@ namespace TicketingApp.Controllers
                 {
                     ViewBag.Device = result.Match.DeviceType.ToString();
                     Console.WriteLine(ViewBag.Device);
-
-                    
                     model.ListData = await f.ModuleData_Get();
-
                     return await Task.Run(() => View(model));
                 }
             }
