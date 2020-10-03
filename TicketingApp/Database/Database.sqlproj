@@ -2173,6 +2173,7 @@
     <Build Include="dbo\Tables\DataLog\DataInventory.sql" />
     <Build Include="dbo\Tables\Master_ListItem.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\SP_ModuleData_Get_ById.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\SP_LoginProc.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

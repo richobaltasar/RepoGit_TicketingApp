@@ -15,6 +15,7 @@ namespace TicketingApp.Controllers
     public class HomeController : Controller
     {
         GlobalFunction GF = new GlobalFunction();
+        HomeFunction f = new HomeFunction();
         
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _env;
@@ -27,7 +28,7 @@ namespace TicketingApp.Controllers
         public async Task<IActionResult> Index()
         {
             Config.ConStr = _configuration.GetConnectionString("Db");
-            HttpContext.Session.SetString("_UserId", GF.GenID());
+            //HttpContext.Session.SetString("_UserId", GF.GenID());
             try
             {
                 DeviceDetector.SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
@@ -37,7 +38,6 @@ namespace TicketingApp.Controllers
 
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("_UserId")))
                 {
-                    //return RedirectToAction("SignIn", "Home");
                     var model = new LoginContent();
                     model.Alert = null;
                     return await Task.Run(() => RedirectToAction("SignIn", "Home",model));
@@ -59,10 +59,65 @@ namespace TicketingApp.Controllers
             }
         }
 
+
+        #region LoginPage
         public async Task<IActionResult> SignIn(LoginContent data)
         {
             return await Task.Run(() => View(data));
         }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignIn_proccess([Bind("Username,Password,Platform")] UserLogin data)
+        {
+            var r = new alert();
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    r = f.LoginProc(data);
+                    if(r.status =="success")
+                    {
+                        HttpContext.Session.SetString("_UserId", GF.GenID());
+                        return await Task.Run(() => Json(new { isValid = true, message = r.message, title = r.title }));
+                    }
+                    else
+                    {
+                        return await Task.Run(() => Json(new { isValid = false, message = r.message, title = r.title }));
+                    }
+                }
+                else
+                {
+                    return await Task.Run(() => Json(new { isValid = false, message = r.message, title = r.title }));
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return await Task.Run(() => Json(new { isValid = false, message = "Error Syntax : "+ex.Message, title ="Error"}));
+            }
+
+
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                HttpContext.Session.Clear();
+                return await Task.Run(() => RedirectToAction("SignIn", "Home"));
+            }
+            catch (Exception ex)
+            {
+                var Error = new ErrorViewModel();
+                Error.MessageContent = ex.ToString();
+                Error.MessageTitle = "Error SignIn Function";
+                return await Task.Run(() => RedirectToAction("Error", "Home", Error));
+            }
+        }
+        #endregion
+
+
 
         public async Task<IActionResult> ChatApp()
         {

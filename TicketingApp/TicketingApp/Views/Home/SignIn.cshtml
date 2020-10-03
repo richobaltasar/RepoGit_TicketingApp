@@ -3,119 +3,196 @@
 *@
 @{
     Layout = "";
+
 }
 
 @model LoginContent
 
-<section id="wrapper" class="login-register login-sidebar" style="background-image:url(../ImageDefault/ewats.svg);">
-    <div class="login-box card">
-        <div class="card-body">
-            <form class="form-horizontal form-material text-center" id="loginform" method="post" asp-action="LoginProc" asp-controller="Home">
-                <a href="javascript:void(0)" class="db">
-                    <img src="~/assets/images/logo-icon.png" alt="Home" /><br />
-                    <strong class="text-black-50">Electronic Waterpark System</strong>
-                </a>
-                <div class="form-group m-t-40">
-                    <div class="col-xs-12">
-                        <input class="form-control" type="text" required=""
-                               placeholder="Username" style="padding-left:10px;"
-                               name="Username" value="root">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-xs-12">
-                        <input class="form-control" type="password" required=""
-                               placeholder="Password" style="padding-left:10px;"
-                               name="Password" value="aqsw">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-12">
-                        <div class="d-flex no-block align-items-center">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                <label class="custom-control-label" for="customCheck1">Remember me</label>
-                            </div>
-                            <div class="ml-auto">
-                                <a href="javascript:void(0)" id="to-recover" class="text-muted"><i class="fas fa-lock m-r-5"></i> Forgot pwd?</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @{
+<!DOCTYPE html>
+<html lang="en">
 
-                    if (Model.Alert != null)
-                    {
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/images/logo-icon.png">
+    <title>Ewats Management</title>
 
-                        <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show" role="alert">
-                            <div class="m-alert__icon">
-                                <i class="flaticon-exclamation-1"></i>
-                                <span></span>
-                            </div>
-                            <div class="m-alert__text">
-                                <strong>Sorry !!</strong>
-                                <br />@Model.Alert.message
-                            </div>
-                            <div class="m-alert__close">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </div>
-                    }
-                }
-                <div class="form-group text-center m-t-20">
-                    <div class="col-xs-12">
-                        <button class="btn btn-info btn-lg btn-block text-uppercase btn-rounded" type="submit">Log In</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center">
-                        <div class="social">
-                            <button class="btn  btn-facebook" data-toggle="tooltip" title="Login with Facebook"> <i aria-hidden="true" class="fab fa-facebook-f"></i> </button>
-                            <button class="btn btn-googleplus" data-toggle="tooltip" title="Login with Google"> <i aria-hidden="true" class="fab fa-google-plus-g"></i> </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group m-b-0">
-                    <div class="col-sm-12 text-center">
-                        Don't have an account? <a href="pages-register2.html" class="text-primary m-l-5"><b>Sign Up</b></a>
-                    </div>
-                </div>
-            </form>
-            <form class="form-horizontal" id="recoverform" action="index.html">
-                <div class="form-group ">
-                    <div class="col-xs-12">
-                        <h3>Recover Password</h3>
-                        <p class="text-muted">Enter your Email and instructions will be sent to you! </p>
-                    </div>
-                </div>
-                <div class="form-group ">
-                    <div class="col-xs-12">
-                        <input class="form-control" type="text" required="" placeholder="Email">
-                    </div>
-                </div>
-                <div class="form-group text-center m-t-20">
-                    <div class="col-xs-12">
-                        <button class="btn btn-primary btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Reset</button>
-                        <button class="btn btn-danger btn-lg btn-block text-uppercase waves-effect waves-light" type="button" id="to-Sigin">Back</button>
-                    </div>
-                </div>
-            </form>
+    <link href="~/Pages/Login/Login.css" rel="stylesheet" />
+    <link href="~/css/style.min.css" rel="stylesheet" />
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="loader">
+            <div class="loader__figure"></div>
+            <p class="loader__label">Elite admin</p>
         </div>
     </div>
-</section>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../../Pages/Login/Images/ewats.svg);">
+        <div class="login-box card">
+            <div class="card-body">
+                <form class="form-horizontal form-material text-center" id="loginform"
+                      asp-action="SignIn_proccess">
+                    <a href="javascript:void(0)" class="db"><img src="~/images/Logo.png" height="50" alt="Home" /><br /><strong style="color:dimgray;font-weight:bold;">Ewat's - Electronic Waterpark System</strong></a>
 
-<!--Custom JavaScript -->
-<script type="text/javascript">
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    });
+                    <input class="form-control" type="text" required="" name="Platform" value="WEB" hidden="hidden">
+                    <div class="form-group m-t-40">
+                        <div class="col-xs-12">
+                            <input class="form-control" type="text" required="" placeholder="Username" name="Username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <input class="form-control" type="password" required="" placeholder="Password" name="Password">
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" id="error-alert">
+                        <button type="button" class="close" data-dismiss="alert">x</button>
+                        <strong id="title-error"></strong>
+                        <p id="message_error"></p>
+                    </div>
+                    <div class="form-group text-center m-t-20">
+                        <div class="col-xs-12">
+                            <button class="btn btn-info btn-lg btn-block text-uppercase btn-rounded" type="submit">Log In</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center">
+                            <div class="social">
+                                <button class="btn  btn-facebook" data-toggle="tooltip" title="Login with Facebook"> <i aria-hidden="true" class="fab fa-facebook-f"></i> </button>
+                                <button class="btn btn-googleplus" data-toggle="tooltip" title="Login with Google"> <i aria-hidden="true" class="fab fa-google-plus-g"></i> </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-0">
+                        <div class="col-sm-12 text-center">
+                            Don't have an account? <a href="pages-register2.html" class="text-primary m-l-5"><b>Sign Up</b></a>
+                        </div>
+                    </div>
+                </form>
+                <form class="form-horizontal" id="recoverform" action="index.html">
+                    <div class="form-group ">
+                        <div class="col-xs-12">
+                            <h3>Recover Password</h3>
+                            <p class="text-muted">Enter your Email and instructions will be sent to you! </p>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-xs-12">
+                            <input class="form-control" type="text" required="" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group text-center m-t-20">
+                        <div class="col-xs-12">
+                            <button class="btn btn-primary btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
 
-    $('#to-recover').on("click", function () {
-        $("#loginform").slideUp();
-        $("#recoverform").fadeIn();
-    });
-    $('#to-Sigin').on("click", function () {
-        $("#loginform").fadeIn();
-        $("#recoverform").slideUp();
-    });
-</script>
+    <script src="~/assets/jquery/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    
+    <script src="~/assets/popper/popper.min.js"></script>
+    <script src="~/assets/bootstrap/js/bootstrap.min.js"></script>
+    
+    <!--Custom JavaScript -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#error-alert").hide();
+        });
+        $(function () {
+            $(".preloader").fadeOut();
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+        // ==============================================================
+        // Login and Recover Password
+        // ==============================================================
+        $('#to-recover').on("click", function () {
+            $("#loginform").slideUp();
+            $("#recoverform").fadeIn();
+        });
+
+        $(function () {
+            $("#loginform").submit(function (e){
+                try {
+                    e.preventDefault();
+                    var Data = new FormData(document.querySelector('form'))
+                    $.ajax({
+                        type: 'POST',
+                        url: document.querySelector('form').action,
+                        data: Data,
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+                            console.log(res);
+                            if (res.isValid) {
+                                window.location.href = "@Url.Action("Index","Home")";
+                            }
+                            else {
+                                $("#title-error").text(res.title);
+                                $("#message_error").text(res.message);
+                                $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                                    $("#error-alert").slideUp(500);
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message);
+                            console.log(err);
+                            $("#message_error").text("ERROR !! " + err.responseText);
+                            $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                                $("#error-alert").slideUp(500);
+                            });
+                        }
+                    })
+                    //to prevent default form submit event
+                    return false;
+                }
+                catch (ex) {
+                    console.log(ex)
+                    $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                        $("#error-alert").slideUp(500);
+                    });
+                }
+
+            });
+        })
+
+    </script>
+
+</body>
+</html>
+
+
+

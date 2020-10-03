@@ -10,21 +10,92 @@
 @{
     if (Model.Error == null)
     {
-        <form>
+        <form asp-action="ModuleData_Save"
+              asp-route-id=""
+              onsubmit="return jQueryAjaxPost(this)"
+              autocomplete="off">
+            <div class="alert alert-danger" id="error-alert">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Success! </strong> Product have added to your wishlist.
+                <p id="message_error"></p>
+            </div>
             @{
                 formData.Template = f.GetFormLayout("Form Master CRUD");
                 formData.ColField = 3;
-                if(Model != null)
+                if (Model != null)
                 {
                     formData.dbContext = Model;
                 }
                 @await Html.PartialAsync("_LayoutForm", formData)
                 <hr />
-                <button type="submit" class="btn btn-outline-info" style="float:right;">
-                    <span class="fa fa-save"></span> Save
-                </button>
+
+                if (Model.IdModul == null)
+                {
+                    <button type="submit" class="btn btn-outline-info" style="float:right;">
+                        <span class="fa fa-save"></span> Create
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-outline-info" style="float:right;">
+                        <span class="fa fa-save"></span> Update
+                    </button>
+                }
             }
         </form>
+        <div class="product-options">
+            <a id="myWish" href="javascript:;" class="btn btn-mini">Add to Wishlist </a>
+            <a href="" class="btn btn-mini"> Purchase </a>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#error-alert").hide();
+            });
+
+            jQueryAjaxPost = form => {
+                try {
+                    var Data = new FormData(form);
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action,
+                        data: Data,
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+                            console.log(res);
+                            if (res.isValid) {
+                                $('#view-all').html(res.html)
+                                $('#form-modal .modal-body').html('');
+                                $('#form-modal .modal-title').html('');
+                                $('#form-modal').modal('hide');
+                                $.notify('submited Successfully', { globalPosition: 'top center', className: 'success' })
+                            }
+                            else {
+                                $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                                    $("#error-alert").slideUp(500);
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message);
+                            console.log(err);
+                            $("#message_error").text("ERROR !! " + err.responseText);
+                            $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                                $("#error-alert").slideUp(500);
+                            });
+                        }
+                    })
+                    //to prevent default form submit event
+                    return false;
+                } catch (ex) {
+                    console.log(ex)
+                    $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                        $("#error-alert").slideUp(500);
+                    });
+                }
+            }
+        </script>
     }
     else
     {

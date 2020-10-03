@@ -26,5 +26,19 @@ namespace TicketingApp.Models
         public string logo_icon { get; set; }
         public string logo_Image { get; set; }
     }
+    public class alert
+    {
+        public string title { get; set; }
+        public string message { get; set; }
+        public string status { get; set; }
+    }
+
+    public class ResultData
+    {
+        public string Message { get; set; }
+        public string CodeError { get; set; }
+        public int status { get; set; }
+        public string Output { get; set; }
+    }
 
 }
