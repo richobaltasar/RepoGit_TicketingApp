@@ -1,9 +1,4 @@
-﻿@{ 
-    var UserProfile = new UserProfile();
-    UserProfile.Username = "Riko";
-    UserProfile.PhotoProfile = "images/users/1.jpg";
-    UserProfile.NamaLengkap = "Riko Ade Rinanda";
-}
+﻿@model LeftSidebarModel
 
 <aside class="left-sidebar">
     <!-- Sidebar scroll-->
@@ -11,11 +6,11 @@
         <!-- User Profile-->
         <div class="user-profile">
             <div class="user-pro-body">
-                <div><img src="~/@UserProfile.PhotoProfile" width="30" alt="user-img" class="img-circle"></div>
+                <div><img src="~/@Model.user.Photo" width="30" alt="user-img" class="img-circle"></div>
                 <div class="dropdown">
                     <a href="javascript:void(0)" class="dropdown-toggle u-dropdown link hide-menu" data-toggle="dropdown" 
                        role="button" aria-haspopup="true" aria-expanded="false">
-                        @UserProfile.NamaLengkap <span class="caret"></span>
+                        @Model.user.NamaLengkap <span class="caret"></span>
                     </a>
                     <div class="dropdown-menu animated flipInY">
                         @await Html.PartialAsync("_UserProfile_Menu", null)
@@ -27,7 +22,7 @@
         <nav class="sidebar-nav">
             <ul id="sidebarnav">
                 @{ 
-                    TicketingApp.Function.GlobalFunction f = new TicketingApp.Function.GlobalFunction();
+                    
                     //var modul = f.Get_Module(1);
                 }
 

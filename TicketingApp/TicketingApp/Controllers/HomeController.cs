@@ -44,6 +44,7 @@ namespace TicketingApp.Controllers
                 }
                 else
                 {
+                    ViewBag.UserId = HttpContext.Session.GetString("_UserId");
                     ViewBag.Device = result.Match.DeviceType.ToString();
                     Console.WriteLine(ViewBag.Device);
                     return await Task.Run(() => View());
@@ -78,7 +79,16 @@ namespace TicketingApp.Controllers
                     r = f.LoginProc(data);
                     if(r.status =="success")
                     {
-                        HttpContext.Session.SetString("_UserId", GF.GenID());
+                        string UserId = f.GetIDUser(data);
+                        if(UserId!= "")
+                        {
+                            HttpContext.Session.SetString("_UserId", UserId);
+                        }
+                        else
+                        {
+                            HttpContext.Session.Clear();
+                        }
+
                         return await Task.Run(() => Json(new { isValid = true, message = r.message, title = r.title }));
                     }
                     else

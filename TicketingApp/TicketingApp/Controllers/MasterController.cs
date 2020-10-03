@@ -32,7 +32,6 @@ namespace TicketingApp.Controllers
         {
             Config.ConStr = _configuration.GetConnectionString("Db");
             var model = new ModuleDataModel();
-            HttpContext.Session.SetString("_UserId", GF.GenID());
             try
             {
                 DeviceDetector.SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
@@ -47,6 +46,7 @@ namespace TicketingApp.Controllers
                 }
                 else
                 {
+                    ViewBag.UserId = HttpContext.Session.GetString("_UserId");
                     ViewBag.Device = result.Match.DeviceType.ToString();
                     Console.WriteLine(ViewBag.Device);
                     model.ListData = await f.ModuleData_Get();

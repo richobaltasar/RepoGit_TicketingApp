@@ -56,5 +56,49 @@ namespace TicketingApp.Function
 
         }
 
+        #region UserPP
+        public UserData GetProfileUser(string IdUser)
+        {
+            var res = new UserData();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_GetProfileUser " +
+                        "@IdUser=" + IdUser + "";
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Type type = res.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "" && p.Name != "Error")
+                                        {
+                                            p.SetValue(res, reader[p.Name].ToString(), null);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        #endregion
+
     }
 }

@@ -67,23 +67,33 @@
     </div>
 
     <div id="main-wrapper">
-        @await Html.PartialAsync("_Admin_TopBar", null)
-        @await Html.PartialAsync("_Admin_Left_Sidebar", null)
+       @{
+
+           GlobalFunction f = new GlobalFunction();
+           var userdata = f.GetProfileUser(ViewBag.UserId);
+           var modelTopBar = new TopbarModel();
+           modelTopBar.user = userdata;
+        }
+        @await Html.PartialAsync("_Admin_TopBar", modelTopBar)
+        @{ 
+            var modelLeftbar = new LeftSidebarModel();
+            modelLeftbar.user = userdata;
+        }
+        @await Html.PartialAsync("_Admin_Left_Sidebar", modelLeftbar)
         <div class="page-wrapper">
             <div class="container-fluid">
                 <div id="view-page">
                     @RenderBody()
                 </div>
-                @await Html.PartialAsync("_Admin_Right_Sidebar", null)
+                @{
+                    var modelRightbar = new RightSidebarModel();
+                    modelRightbar.user = userdata;
+                }
+                @await Html.PartialAsync("_Admin_Right_Sidebar", modelRightbar)
             </div>
         </div>
 
         @await Html.PartialAsync("_Admin_Footer", null)
     </div>
-
-    <script type="text/javascript">
-
-    </script>
-
 </body>
 </html>

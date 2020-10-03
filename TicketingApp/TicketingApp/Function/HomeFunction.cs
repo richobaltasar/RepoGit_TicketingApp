@@ -64,5 +64,37 @@ namespace TicketingApp.Function
             }
             return res;
         }
+        public string GetIDUser(UserLogin data)
+        {
+            string res = "";
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_LoginProc_GetID " +
+                        "@Username='" + data.Username + "'," +
+                        "@Password='" + data.Password + "'," +
+                        "@Category='" + data.Platform + "'";
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                res = reader["id"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
     }
 }

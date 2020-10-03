@@ -1,17 +1,13 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
-    var data = new UserProfile();
-    data.Username = "Riko";
-    data.PhotoProfile = "images/users/1.jpg";
-}
+@model TopbarModel
 
 <li class="nav-item dropdown u-pro">
     <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <img src="~/@data.PhotoProfile" width="30" alt="user" class="img img-circle">
+        <img src="~/@Model.user.Photo" width="30" alt="user" class="img img-circle">
         <span class="hidden-md-down" style="font-size:small;">
-            @data.Username &nbsp;
+            @Model.user.username &nbsp;
             <i class="fa fa-angle-down"></i>
         </span>
     </a>

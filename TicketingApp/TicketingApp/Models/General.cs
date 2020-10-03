@@ -8,6 +8,7 @@ namespace TicketingApp.Models
     public static class Config
     {
         public static string ConStr { get; set; }
+        public static string UserId{ get; set; }
     }
 
     public class DefaultPage
@@ -39,6 +40,19 @@ namespace TicketingApp.Models
         public string CodeError { get; set; }
         public int status { get; set; }
         public string Output { get; set; }
+    }
+
+    public class TopbarModel
+    {
+        public UserData user { get; set; }
+    }
+    public class LeftSidebarModel
+    {
+        public UserData user { get; set; }
+    }
+    public class RightSidebarModel
+    {
+        public UserData user { get; set; }
     }
 
 }

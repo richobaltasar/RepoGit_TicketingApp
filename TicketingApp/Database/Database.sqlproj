@@ -2174,6 +2174,8 @@
     <Build Include="dbo\Tables\Master_ListItem.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\SP_ModuleData_Get_ById.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\SP_LoginProc.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\SP_LoginProc_GetID.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\SP_GetProfileUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />
