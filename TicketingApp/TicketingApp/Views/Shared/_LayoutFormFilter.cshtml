@@ -14,19 +14,9 @@
             <div class="col-md-@a" @{if (d.ShowHide != "Show") { <text> hidden="hidden" </text>  } }>
                 <div class="form-group">
                     <label class="control-label">
-                        @{
-                            if (d.Mandatory == "1")
-                            {
-                                @Html.Raw("*" + d.TextLabel);
-                            }
-                            else
-                            {
-                                @d.TextLabel
-                            }
-                        }
-
+                        @d.TextLabel
                     </label>
-                    @await Html.PartialAsync("_LayoutTypeInput", d)
+                    @await Html.PartialAsync("_LayoutTypeInputFilter", d)
                 </div>
             </div>
         }

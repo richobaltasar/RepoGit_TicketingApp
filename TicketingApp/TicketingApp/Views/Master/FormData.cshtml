@@ -10,36 +10,14 @@
 @{
     if (Model.Error == null)
     {
-        @*<link rel="stylesheet" type="text/css" href="~/assets/datatables/jquery.dataTables.min.css">
-            <script src="~/assets/datatables/jquery.dataTables.min.js"></script>*@
+        <link rel="stylesheet" type="text/css" href="~/assets/datatables/jquery.dataTables.min.css">
+        <script src="~/assets/datatables/jquery.dataTables.min.js"></script>
 
-        <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
-        <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
+        <link href="~/assets/datatables/responsive.dataTables.min.css" rel="stylesheet" />
+        <script src="~/assets/datatables/dataTables.responsive.min.js"></script>
 
-        @*<link href="~/assets/datatables/responsive.dataTables.min.css" rel="stylesheet" />
-        <script src="~/assets/datatables/dataTables.responsive.min.js"></script>*@
-
-
-        <script src="~/assets/dropify/dropify.min.js"></script>
-        <link href="~/assets/dropify/dropify.min.css" rel="stylesheet" />
-
-        <link href="https://cdn.datatables.net/rowgroup/1.0.2/css/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css" />
-        <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script>
-
-        <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.js"></script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-
-        <link href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.css" rel="stylesheet" type="text/css" />
-        <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.js"></script>
-        <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
-        <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-
-        <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
-
-
-
+        <link href="~/assets/datatables/rowGroup.dataTables.min.css" rel="stylesheet" />
+        <script src="~/assets/datatables/dataTables.rowGroup.min.js"></script>
 
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
@@ -76,7 +54,7 @@
                             <div class="card">
                                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <form>
+                                        <form asp-action="FormData_Search" onsubmit="return jQueryAjaxSearch(this)" >
                                             @{
                                                 formData.Template = f.GetFormLayoutForFilter("Form FormData");
                                                 formData.ColField = 3;
@@ -131,7 +109,39 @@
                         $(".preloader").fadeOut();
                     }
                 });
+            }
 
+            jQueryAjaxSearch = form => {
+                try {
+                    $(".preloader").fadeIn();
+                    var Data = new FormData(form);
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action,
+                        data: Data,
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+                            console.log(res);
+                            if (res.isValid) {
+                                $('#view-all').html(res.html)
+                            }
+                            else {
+                                alert(res.title + "/n" + res.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message);
+                        }
+                    })
+                    //to prevent default form submit event
+                    $(".preloader").fadeOut();
+                    return false;
+                } catch (ex) {
+                    console.log(ex)
+                    alert("Sorry Error : " + "/n" + ex.message);
+                }
             }
         </script>
     }

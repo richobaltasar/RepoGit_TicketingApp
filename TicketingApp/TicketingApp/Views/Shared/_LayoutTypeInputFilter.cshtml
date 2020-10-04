@@ -1,0 +1,78 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model FormMaster
+@{
+    MasterFunction f = new MasterFunction();
+    try
+    {
+        switch (Model.Type)
+        {
+            case "textbox":
+                <input type="text"
+                       id="@Model.Id"
+                       name="@Model.Id"
+                       value="@Model.ValueInput"
+                       @{ if (Model.Enable == "disable") { @Html.Raw(" readonly")  }}
+                       class="form-control">
+                break;
+            case "select":
+                <select id="@Model.Id"
+                        name="@Model.Id"
+                        @{ if (Model.Enable == "disable") { <text> disabled </text>  }}
+                        class="form-control custom-select">
+                    @{
+                        dynamic t = null;
+                        t = f.GetListDataMaster(Model.ListModel);
+                        @foreach (var dd in t)
+                        {
+                            if (dd.Value == Model.ValueInput)
+                            {
+                                <option value="@dd.Value" selected="selected">@dd.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@dd.Value">@dd.Text</option>
+                            }
+                        }
+                    }
+                </select>
+                break;
+            case "FileInput":
+
+                <input type="file"
+                       id="File_@Model.Id"
+                       name="File_@Model.Id"
+                       @{ if (Model.Enable == "disable") { @Html.Raw("readonly='readonly'")  }}
+                       class="dropify"
+                       accept="@Model.ListModel"
+                       data-height="100"
+                       @{ if (Model.ValueInput != null) { @Html.Raw(" data-default-file='../../" + Model.ValueInput + "' ")  } else { @Html.Raw("data-default-file='../../ImageDefault/IdentityCard.png'")  } } />
+                <input type="text"
+                       hidden="hidden"
+                       id="@Model.Id"
+                       name="@Model.Id"
+                       value="@Model.ValueInput"
+                       />
+                <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#File_@Model.Id').attr("data-default-file", "../../@Model.ValueInput");
+                    $('.dropify').dropify({
+                        messages: {
+                            'default': 'Drag and drop a file here or click',
+                            'replace': 'Drag and drop or click to replace',
+                            'remove': 'Remove',
+                            'error': 'Ooops, something wrong happended.'
+                        }
+                    });
+                });
+                </script>
+                break;
+        }
+    }
+    catch (Exception ex)
+    {
+        <p>error @ex.Message</p>
+    }
+
+}

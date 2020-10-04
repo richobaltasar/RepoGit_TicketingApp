@@ -57,6 +57,13 @@
                         }
                     </td>
                     <td nowrap align="center" width="30">
+                        @if (item.Platform == "WEB")
+                        {
+                            <a class="" style="text-align:left;"
+                               href="@Url.Action(item.Action,item.Controller)" target="_blank" rel="noopener noreferrer">
+                                <i class="fa fa-link"></i>
+                            </a>
+                        }
                         <form asp-action="MenuData_Delete" asp-route-Id="@item.idMenu" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
                             <button type="submit"
                                     class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
@@ -73,18 +80,46 @@
 
 <script type="text/javascript">
     $(function () {
-        $('#myTable').DataTable({
+        var collapsedGroups = {};
+        var table = $('#myTable').DataTable({
             "info": false,
             "scrollX": true,
             "autoWidth": false,
-            "paging": false,
+            "paging": true,
             scrollY: "50vh",
             scrollX: !0,
             scrollCollapse: !0,
             iDisplayLength: 100,
-            searching: true
+            searching: true,
+            order: [[4, 'asc']],
+            rowGroup: {
+                // Uses the 'row group' plugin
+                dataSrc: 4,
+                startRender: function (rows, group) {
+                    var collapsed = !!collapsedGroups[group];
+
+                    rows.nodes().each(function (r) {
+                        r.style.display = collapsed ? 'none' : '';
+                    });
+
+                    // Add category name to the <tr>. NOTE: Hardcoded colspan
+                    return $('<tr/>')
+                        .append('<td colspan="8">' + group + ' (' + rows.count() + ')</td>')
+                        .attr('data-name', group)
+                        .toggleClass('collapsed', collapsed);
+                }
+            }
         });
+
+        $('#myTable tbody').on('click', 'tr.group-start', function () {
+            var name = $(this).data('name');
+            console.log(name);
+            collapsedGroups[name] = !collapsedGroups[name];
+            table.draw(false);
+        }); 
     });
+
+
 
     jQueryAjaxDelete = form => {
         if (confirm('Are you sure to delete this record ?')) {

@@ -135,6 +135,7 @@
     <Folder Include="dbo\Stored Procedures\Sp_Web\ModulData" />
     <Folder Include="dbo\Stored Procedures\Sp_Web\MenuData" />
     <Folder Include="dbo\Stored Procedures\Sp_Web\FormData" />
+    <Folder Include="dbo\Stored Procedures\Sp_Web\ListItemData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Functions\Roman.sql">
@@ -2189,6 +2190,13 @@
     <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_GetById.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_Save.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_Del.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ListItemData\SP_ListItemData_Get.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ListItemData\SP_ListItemData_Save.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ListItemData\SP_ListItemData_Del.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ListItemData\SP_ListItemData_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_GetSearch.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ListItemData\SP_ListItemData_GetSearch.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_GetSearch.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

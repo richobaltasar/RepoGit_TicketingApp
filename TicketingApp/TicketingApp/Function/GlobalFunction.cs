@@ -35,7 +35,16 @@ namespace TicketingApp.Function
         {
             return int.Parse(value);
         }
-
+        public static int? AsInt(this string s)
+        {
+            int result;
+            if (s == null)
+                return null;
+            else if (int.TryParse(s, out result))
+                return result;
+            else
+                return null;
+        }
     }
     
     public class GlobalFunction

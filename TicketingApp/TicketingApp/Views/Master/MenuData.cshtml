@@ -15,8 +15,14 @@
 
         <link href="~/assets/datatables/responsive.dataTables.min.css" rel="stylesheet" />
         <script src="~/assets/datatables/dataTables.responsive.min.js"></script>
+
+        <link href="~/assets/datatables/rowGroup.dataTables.min.css" rel="stylesheet" />
+        <script src="~/assets/datatables/dataTables.rowGroup.min.js"></script>
+
         <script src="~/assets/dropify/dropify.min.js"></script>
         <link href="~/assets/dropify/dropify.min.css" rel="stylesheet" />
+
+
 
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
@@ -41,7 +47,7 @@
                                 onclick="showInPopup('@Url.Action("MenuData_Form","Master",new { id=0},Context.Request.Scheme)','Form Menu Data')">
                             <i class="fa fa-plus-circle"></i> Create New
                         </button>
-                       
+
                         <button type="button" class="btn btn-outline-info m-l-15"
                                 style="float:right"
                                 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -53,7 +59,7 @@
                             <div class="card">
                                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <form>
+                                        <form asp-action="MenuData_Search" onsubmit="return jQueryAjaxSearch(this)">
                                             @{
                                                 formData.Template = f.GetFormLayoutForFilter("Form Master Menu");
                                                 formData.ColField = 3;
@@ -110,6 +116,38 @@
                     }
                 });
 
+            }
+            jQueryAjaxSearch = form => {
+                try {
+                    $(".preloader").fadeIn();
+                    var Data = new FormData(form);
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action,
+                        data: Data,
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+                            console.log(res);
+                            if (res.isValid) {
+                                $('#view-all').html(res.html)
+                            }
+                            else {
+                                alert(res.title + "/n" + res.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message);
+                        }
+                    })
+                    //to prevent default form submit event
+                    $(".preloader").fadeOut();
+                    return false;
+                } catch (ex) {
+                    console.log(ex)
+                    alert("Sorry Error : " + "/n" + ex.message);
+                }
             }
         </script>
     }

@@ -1,0 +1,123 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "";
+    MasterFunction f = new MasterFunction();
+    var formData = new FormMasterData();
+}
+@model ListItemData
+@{
+    if (Model.Error == null)
+    {
+
+        try
+        {
+    <form asp-action="ListItemData_Save"
+          onsubmit="return jQueryAjaxPost(this)"
+          autocomplete="off">
+
+        @{
+            formData.Template = f.GetFormLayout("Form ListItemData");
+            formData.ColField = 2;
+            if (Model != null)
+            {
+                formData.dbContext = Model;
+            }
+            @await Html.PartialAsync("_LayoutForm", formData)
+            <div class="alert alert-danger" id="error-alert">
+                
+                <strong id="title-error"></strong>
+                <br />
+                <div id="message_error" style="overflow-x:auto;"></div>
+            </div>
+            <hr />
+
+            if (Model.id == 0)
+            {
+                <button type="submit" class="btn btn-outline-info" style="float:right;">
+                    <span class="fa fa-save"></span> Create
+                </button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-outline-info" style="float:right;margin-left:10px;">
+                    <span class="fa fa-save"></span> Simpan
+                </button>
+            }
+        }
+    </form>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#error-alert").hide();
+                });
+
+                jQueryAjaxPost = form => {
+                    try {
+                        $(".preloader").fadeIn();
+                        var Data = new FormData(form);
+                        $.ajax({
+                            type: 'POST',
+                            url: form.action,
+                            data: Data,
+                            contentType: false,
+                            processData: false,
+                            success: function (res) {
+                                console.log(res);
+                                if (res.isValid) {
+                                    $('#view-all').html(res.html)
+                                    $('#form-modal .modal-body').html('');
+                                    $('#form-modal .modal-title').html('');
+                                    $('#form-modal').modal('hide');
+                                    $.notify('submited Successfully', { globalPosition: 'top center', className: 'success' })
+                                }
+                                else {
+                                    $("#title-error").text(res.title);
+                                    $("#message_error").text(res.message);
+                                    $("#error-alert").show();
+                                    $("#error-alert").fadeTo(10000, 500).slideUp(500, function () {
+                                        $("#error-alert").slideUp(500); 
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                var err = eval("(" + xhr.responseText + ")");
+                                alert(err.Message);
+                                console.log(err);
+                                $("#title-error").text("Sorry");
+                                $("#message_error").text("ERROR !! " + err.responseText);
+                                $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                                    $("#error-alert").slideUp(500);
+                                });
+                            }
+                        })
+                        //to prevent default form submit event
+                        $(".preloader").fadeOut();
+                        return false;
+                    } catch (ex) {
+                        console.log(ex)
+                        $(".preloader").fadeOut();
+                        $("#title-error").text("Sorry");
+                        $("#message_error").text("ERROR !! ");
+                        $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                            $("#error-alert").slideUp(500);
+                        });
+                    }
+                }
+            </script>
+        }
+        catch (Exception ex)
+        {
+            var Error = new ErrorViewModel();
+            Error.MessageContent = ex.ToString();
+            Error.MessageTitle = "Error ";
+            Error.RequestId = Activity.Current?.Id ?? "0";
+            @await Html.PartialAsync("Error", Error)
+        }
+    }
+    else
+    {
+        @await Html.PartialAsync("Error", Model.Error)
+    }
+}
+

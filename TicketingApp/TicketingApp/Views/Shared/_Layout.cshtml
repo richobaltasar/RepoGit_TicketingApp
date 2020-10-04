@@ -11,7 +11,7 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="~/favicon.ico">
 
-    <title>Elite Admin Template - The Ultimate Multipurpose admin template</title>
+    <title>EWATS - Electronic Waterpark System</title>
 
 
     <!-- Bootstrap popper Core JavaScript -->
@@ -62,14 +62,17 @@
 <body class="skin-purple-dark fixed-layout">
     <div class="preloader">
         <div class="loader">
-            <div class="loader__figure"></div>
-            <p class="loader__label">Elite admin</p>
+            <div class="card">
+                <div class="card-body" style="text-align:center;">
+                    <img src="~/images/Animation/chair.gif" width="200" style="margin-left:-100px;"/>
+                    <p class="loader__label" style="margin-top:-20px;">Ewats Loading...</p>
+                </div>
+            </div>
+            
         </div>
     </div>
-
     <div id="main-wrapper">
        @{
-
            GlobalFunction f = new GlobalFunction();
            var userdata = f.GetProfileUser(ViewBag.UserId);
            var modelTopBar = new TopbarModel();

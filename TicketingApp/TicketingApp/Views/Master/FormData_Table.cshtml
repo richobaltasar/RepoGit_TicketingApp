@@ -16,14 +16,14 @@
             <th style="text-align:center;">Id</th>
             <th style="text-align:center;">TextLabel</th>
             <th style="text-align:center;">Type</th>
-            <th style="text-align:center;">Action</th>
-            <th style="text-align:center;">Controller</th>
-            <th style="text-align:center;">ValueInput</th>
+            @*<th style="text-align:center;">Action</th>
+        <th style="text-align:center;">Controller</th>
+        <th style="text-align:center;">ValueInput</th>*@
             <th style="text-align:center;">ListModel</th>
-            <th style="text-align:center;">Urutan</th>
-            <th style="text-align:center;">ShowHide</th>
-            <th style="text-align:center;">ReadOnly</th>
-            <th style="text-align:center;">Enable</th>
+            <th style="text-align:center;">Index</th>
+            <th style="text-align:center;">Show</th>
+            @*<th style="text-align:center;">ReadOnly</th>
+            <th style="text-align:center;">Enable</th>*@
             <th style="text-align:center;">Mandatory</th>
             <th style="text-align:center;">IsNumber</th>
             <th style="text-align:center;">FilterBy</th>
@@ -47,33 +47,54 @@
                     </td>
                     <td nowrap align="left">@item.TextLabel</td>
                     <td nowrap align="left">@item.Type</td>
-                    <td nowrap align="left">@item.Action</td>
+                    @*<td nowrap align="left">@item.Action</td>
                     <td nowrap align="left">@item.Controller</td>
-                    <td nowrap align="left">@item.ValueInput</td>
+                    <td nowrap align="left">@item.ValueInput</td>*@
                     <td nowrap align="left">@item.ListModel</td>
-                    <td nowrap align="left">@item.Urutan</td>
-                    <td nowrap align="left">@item.ShowHide</td>
-                    <td nowrap align="left">@item.ReadOnly</td>
-                    <td nowrap align="left">@item.Enable</td>
-                    <td nowrap align="left">@item.Mandatory</td>
-                    <td nowrap align="center">
-                        @if (item.IsNumber == 1)
+                    <td nowrap align="center" width="30">@item.Urutan</td>
+                    
+                    <td nowrap align="center" width="30">
+                        @if (item.ShowHide == "Hidden")
                         {
-                            <div class="badge badge-success">Only Number</div>
+                            <i class="fa fa-eye-slash"></i>
                         }
                         else
                         {
-                            <div class="badge badge-danger">String</div>
+                            <i class="fa fa-eye text-info"></i>
+                        }
+
+                    </td>
+                    @*<td nowrap align="left">@item.ReadOnly</td>
+                    <td nowrap align="left">@item.Enable</td>
+                    <td nowrap align="left">@item.Mandatory</td>*@
+                    <td nowrap align="center" width="30">
+                        @if (item.Mandatory == "1")
+                        {
+                            <i class="fa fa-check text-success"></i>
+                        }
+                        else
+                        {
+                            <i class="fa fa-minus text-danger"></i>
                         }
                     </td>
-                    <td nowrap align="center">
-                        @if (item.FilterBy == 1)
+                    <td nowrap align="center" width="30">
+                        @if (item.IsNumber == 1)
                         {
-                            <div class="badge badge-success">Show</div>
+                            <i class="fa fa-check text-success"></i>
                         }
                         else
                         {
-                            <div class="badge badge-danger">hide</div>
+                            <i class="fa fa-minus text-danger"></i>
+                        }
+                    </td>
+                    <td nowrap align="center" width="30">
+                        @if (item.FilterBy == 1)
+                        {
+                            <i class="fa fa-check text-success"></i>
+                        }
+                        else
+                        {
+                            <i class="fa fa-minus text-danger"></i>
                         }
                     </td>
                     <td nowrap align="center" width="30">

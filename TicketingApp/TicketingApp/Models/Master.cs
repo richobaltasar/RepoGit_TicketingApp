@@ -78,6 +78,24 @@ namespace TicketingApp.Models
     }
     #endregion
 
+    #region ListItemData
+    public class ListItemDataModel
+    {
+        public List<ListItemData> ListData { get; set; }
+        public ErrorViewModel Error { get; set; }
+    }
+    public class ListItemData
+    {
+        public int id { get; set; }
+        public string ListName { get; set; }
+        public string Urutan { get; set; }
+        public string Text { get; set; }
+        public string Value { get; set; }
+
+        public ErrorViewModel Error { get; set; }
+    }
+    #endregion
+
 
 
     public class FormMasterData

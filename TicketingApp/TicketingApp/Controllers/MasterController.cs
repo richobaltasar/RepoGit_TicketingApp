@@ -400,6 +400,41 @@ namespace TicketingApp.Controllers
             }
             
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MenuData_Search([Bind("idMenu,Action,Controller,NamaMenu,Img,Platform,Status")] MenuData data)
+        {
+            var model = new MenuDataModel();
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.ListData = await f.MenuData_GetSearch(data);
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) });
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    model.Error = r;
+                    model.ListData = await f.MenuData_Get();
+                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Table", data) });
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = r;
+                model.ListData = await f.MenuData_Get();
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) });
+            }
+        }
+
         #endregion
 
         #region Form Data
@@ -528,6 +563,201 @@ namespace TicketingApp.Controllers
             
             model.ListData = await f.FormData_Get();
             return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FormData_Search([Bind("idLog,NamaForm,Type,Id,TextLabel,Action,Controller,ValueInput,ListModel,Urutan,ShowHide,ReadOnly,Enable,Mandatory,IsNumber,FilterBy")] FormData data)
+        {
+            var model = new FormDataModel();
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.ListData = await f.FormData_GetSearch(data);
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) });
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    model.Error = r;
+                    model.ListData = await f.FormData_Get();
+                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Table", data) });
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = r;
+                model.ListData = await f.FormData_Get();
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) });
+            }
+        }
+        #endregion
+
+
+        #region  ListItem Data
+        public async Task<IActionResult> ListItemData()
+        {
+            Config.ConStr = _configuration.GetConnectionString("Db");
+            var model = new ListItemDataModel();
+            try
+            {
+                DeviceDetector.SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
+                BotParser botParser = new BotParser();
+                var userAgent = Request.Headers["User-Agent"];
+                var result = DeviceDetector.GetInfoFromUserAgent(userAgent);
+
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("_UserId")))
+                {
+                    var model2 = new alertLogin();
+                    return await Task.Run(() => RedirectToAction("SignIn", "Home", model2));
+                }
+                else
+                {
+                    ViewBag.UserId = HttpContext.Session.GetString("_UserId");
+                    ViewBag.Device = result.Match.DeviceType.ToString();
+                    Console.WriteLine(ViewBag.Device);
+                    model.ListData = await f.ListItemData_Get();
+                    return await Task.Run(() => View(model));
+                }
+            }
+            catch (Exception ex)
+            {
+                var Error = new ErrorViewModel();
+                Error.MessageContent = ex.ToString();
+                Error.MessageTitle = "Error ";
+                Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = Error;
+                return await Task.Run(() => View(model));
+            }
+        }
+
+        [NoDirectAccess]
+        public async Task<IActionResult> ListItemData_Form(int id = 0)
+        {
+            var model = new ListItemData();
+            try
+            {
+                if (id == 0)
+                {
+                    model.id = id;
+                    return await Task.Run(() => View(model));
+                }
+                else
+                {
+                    model = await f.ListItemData_GetById(id);
+
+                    if (model == null)
+                    {
+                        return NotFound();
+                    }
+                    return await Task.Run(() => View(model));
+                }
+            }
+            catch (Exception ex)
+            {
+                var Error = new ErrorViewModel();
+                Error.MessageContent = ex.ToString();
+                Error.MessageTitle = "Error ";
+                Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = Error;
+                return await Task.Run(() => View(model));
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ListItemData_Save([Bind("id,ListName,Urutan,Text,Value")] ListItemData data)
+        {
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    r = await f.ListItemData_Save(data);
+                    if (r.MessageStatus == "success")
+                    {
+                        var model = new ListItemDataModel();
+                        model.ListData = await f.ListItemData_Get();
+                        return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
+                    }
+                    else
+                    {
+                        data.Error = r;
+                        return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Form", data) });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Form", data) });
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Form", data) });
+            }
+        }
+
+        [HttpPost, ActionName("ListItemData_Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ListItemData_Delete(int Id)
+        {
+            var model = new ListItemDataModel();
+            model.Error = await f.ListItemData_Del(Id);
+            if (model.Error.MessageStatus == "success")
+            {
+                model.Error = null;
+            }
+
+            model.ListData = await f.ListItemData_Get();
+            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ListItemData_Search([Bind("id,ListName,Urutan,Text,Value")] ListItemData data)
+        {
+            var model = new ListItemDataModel();
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.ListData = await f.ListItemData_GetSearch(data);
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    model.Error = r;
+                    model.ListData = await f.ListItemData_Get();
+                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", data) });
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = r;
+                model.ListData = await f.ListItemData_Get();
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
+            }
         }
         #endregion
     }
