@@ -1,0 +1,162 @@
+﻿
+@model FormDataModel
+
+@if (Model.Error != null)
+{
+    @await Html.PartialAsync("Error", Model.Error)
+}
+
+<table id="myTable"
+       class="display no-wrap table table-hover table-striped table-bordered compact"
+       cellspacing="0">
+    <thead class="bg-dark text-light" style="font-family:Calibri;font-size:small;">
+        <tr>
+            <th width="30">no</th>
+            <th style="text-align:center;">NamaForm</th>
+            <th style="text-align:center;">Id</th>
+            <th style="text-align:center;">TextLabel</th>
+            <th style="text-align:center;">Type</th>
+            <th style="text-align:center;">Action</th>
+            <th style="text-align:center;">Controller</th>
+            <th style="text-align:center;">ValueInput</th>
+            <th style="text-align:center;">ListModel</th>
+            <th style="text-align:center;">Urutan</th>
+            <th style="text-align:center;">ShowHide</th>
+            <th style="text-align:center;">ReadOnly</th>
+            <th style="text-align:center;">Enable</th>
+            <th style="text-align:center;">Mandatory</th>
+            <th style="text-align:center;">IsNumber</th>
+            <th style="text-align:center;">FilterBy</th>
+            <th style="text-align:center;">Delete</th>
+        </tr>
+    </thead>
+    <tbody style="font-size:small;font-family:Calibri;">
+        @{
+            int a = 0;
+            foreach (var item in Model.ListData)
+            {
+                a++;
+                <tr>
+                    <td nowrap align="center">@a</td>
+                    <td nowrap align="left">@item.NamaForm</td>
+                    <td nowrap align="left">
+                        <a class="" style="text-align:left;"
+                           href="javascript:showInPopup('@Url.Action("FormData_Form","Master",new { id=item.idLog},Context.Request.Scheme)','Form Modif Form Data')">
+                            @item.Id
+                        </a>
+                    </td>
+                    <td nowrap align="left">@item.TextLabel</td>
+                    <td nowrap align="left">@item.Type</td>
+                    <td nowrap align="left">@item.Action</td>
+                    <td nowrap align="left">@item.Controller</td>
+                    <td nowrap align="left">@item.ValueInput</td>
+                    <td nowrap align="left">@item.ListModel</td>
+                    <td nowrap align="left">@item.Urutan</td>
+                    <td nowrap align="left">@item.ShowHide</td>
+                    <td nowrap align="left">@item.ReadOnly</td>
+                    <td nowrap align="left">@item.Enable</td>
+                    <td nowrap align="left">@item.Mandatory</td>
+                    <td nowrap align="center">
+                        @if (item.IsNumber == 1)
+                        {
+                            <div class="badge badge-success">Only Number</div>
+                        }
+                        else
+                        {
+                            <div class="badge badge-danger">String</div>
+                        }
+                    </td>
+                    <td nowrap align="center">
+                        @if (item.FilterBy == 1)
+                        {
+                            <div class="badge badge-success">Show</div>
+                        }
+                        else
+                        {
+                            <div class="badge badge-danger">hide</div>
+                        }
+                    </td>
+                    <td nowrap align="center" width="30">
+                        <form asp-action="FormData_Delete" asp-route-Id="@item.idLog" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
+                            <button type="submit"
+                                    class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
+                                    title="View">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(function () {
+        var collapsedGroups = {};
+        var table = $('#myTable').DataTable({
+            "info": false,
+            "scrollX": true,
+            "autoWidth": false,
+            "paging": true,
+            scrollY: "50vh",
+            scrollX: !0,
+            scrollCollapse: !0,
+            iDisplayLength: 100,
+            searching: true,
+            order: [[1, 'asc']],
+            rowGroup: {
+                // Uses the 'row group' plugin
+                dataSrc: 1,
+                startRender: function (rows, group) {
+                    var collapsed = !!collapsedGroups[group];
+
+                    rows.nodes().each(function (r) {
+                        r.style.display = collapsed ? 'none' : '';
+                    });
+
+                    // Add category name to the <tr>. NOTE: Hardcoded colspan
+                    return $('<tr/>')
+                        .append('<td colspan="17">' + group + ' (' + rows.count() + ')</td>')
+                        .attr('data-name', group)
+                        .toggleClass('collapsed', collapsed);
+                }
+            }
+        });
+
+        $('#myTable tbody').on('click', 'tr.group-start', function () {
+            var name = $(this).data('name');
+            console.log(name);
+            collapsedGroups[name] = !collapsedGroups[name];
+            table.draw(false);
+        }); 
+    });
+
+    jQueryAjaxDelete = form => {
+        if (confirm('Are you sure to delete this record ?')) {
+            try {
+                $.ajax({
+                    type: 'POST',
+                    url: form.action,
+                    data: new FormData(form),
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        console.log(res);
+                        $('#view-all').html(res.html);
+                        $.notify('deleted Successfully', { globalPosition: 'top center', className: 'danger' })
+                    },
+                    error: function (err) {
+                        console.log(err)
+                    }
+                })
+            } catch (ex) {
+                console.log(ex)
+            }
+        }
+
+        //prevent default form submit event
+        return false;
+    }
+
+</script>

@@ -6,19 +6,19 @@
     MasterFunction f = new MasterFunction();
     var formData = new FormMasterData();
 }
-@model ModuleData
+@model FormData
 @{
     if (Model.Error == null)
     {
 
         try
         {
-    <form asp-action="ModuleData_Save"
+    <form asp-action="FormData_Save"
           onsubmit="return jQueryAjaxPost(this)"
           autocomplete="off">
 
         @{
-            formData.Template = f.GetFormLayout("Form Master CRUD");
+            formData.Template = f.GetFormLayout("Form FormData");
             formData.ColField = 3;
             if (Model != null)
             {
@@ -33,7 +33,7 @@
             </div>
             <hr />
 
-            if (Model.IdModul == 0)
+            if (Model.idLog == 0)
             {
                 <button type="submit" class="btn btn-outline-info" style="float:right;">
                     <span class="fa fa-save"></span> Create
@@ -56,9 +56,6 @@
                     try {
                         $(".preloader").fadeIn();
                         var Data = new FormData(form);
-                        if ($('#File_Img')[0].files.length > 0) {
-                            Data.append('File_Img', $('#File_Img')[0].files[0]);
-                        }
                         $.ajax({
                             type: 'POST',
                             url: form.action,

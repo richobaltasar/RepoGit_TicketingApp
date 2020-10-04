@@ -6,27 +6,50 @@
     var formData = new FormMasterData();
 }
 
-@model ModuleDataModel
+@model FormDataModel
 @{
     if (Model.Error == null)
     {
-        <link rel="stylesheet" type="text/css" href="~/assets/datatables/jquery.dataTables.min.css">
-        <script src="~/assets/datatables/jquery.dataTables.min.js"></script>
+        @*<link rel="stylesheet" type="text/css" href="~/assets/datatables/jquery.dataTables.min.css">
+            <script src="~/assets/datatables/jquery.dataTables.min.js"></script>*@
 
-        <link href="~/assets/datatables/responsive.dataTables.min.css" rel="stylesheet" />
-        <script src="~/assets/datatables/dataTables.responsive.min.js"></script>
+        <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+        <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
+
+        @*<link href="~/assets/datatables/responsive.dataTables.min.css" rel="stylesheet" />
+        <script src="~/assets/datatables/dataTables.responsive.min.js"></script>*@
+
+
         <script src="~/assets/dropify/dropify.min.js"></script>
         <link href="~/assets/dropify/dropify.min.css" rel="stylesheet" />
 
+        <link href="https://cdn.datatables.net/rowgroup/1.0.2/css/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.datatables.net/rowgroup/1.0.2/js/dataTables.rowGroup.min.js"></script>
+
+        <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+
+        <link href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+        <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+        <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+
+
+
+
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h4 class="text-themecolor">Module Data</h4>
+                <h4 class="text-themecolor">Form Data</h4>
             </div>
             <div class="col-md-7 align-self-center text-right">
                 <div class="d-flex justify-content-end align-items-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Master</a></li>
-                        <li class="breadcrumb-item active">Module Data</li>
+                        <li class="breadcrumb-item active">Form Data</li>
                     </ol>
                 </div>
             </div>
@@ -38,10 +61,10 @@
                     <div class="card-header">
                         <button type="button" class="btn btn-info m-l-15"
                                 style="float:right"
-                                onclick="showInPopup('@Url.Action("ModuleData_Form","Master",new { id=0},Context.Request.Scheme)','Form Modul Data')">
+                                onclick="showInPopup('@Url.Action("FormData_Form","Master",new { id=0},Context.Request.Scheme)','Form Form Data')">
                             <i class="fa fa-plus-circle"></i> Create New
                         </button>
-                       
+
                         <button type="button" class="btn btn-outline-info m-l-15"
                                 style="float:right"
                                 data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -55,7 +78,7 @@
                                     <div class="card-body">
                                         <form>
                                             @{
-                                                formData.Template = f.GetFormLayoutForFilter("Form Master CRUD");
+                                                formData.Template = f.GetFormLayoutForFilter("Form FormData");
                                                 formData.ColField = 3;
                                                 @await Html.PartialAsync("_LayoutFormFilter", formData)
                                                 <button type="submit" class="btn waves-effect waves-light btn-rounded btn-outline-primary">
@@ -70,7 +93,7 @@
                         </div>
                         <div style="margin-top:-30px;">
                             <div id="view-all">
-                                @await Html.PartialAsync("ModuleData_Table", Model)
+                                @await Html.PartialAsync("FormData_Table", Model)
                             </div>
                         </div>
                     </div>
@@ -95,7 +118,6 @@
 
         <script type="text/javascript">
             showInPopup = (url, title) => {
-
                 $.ajax({
                     type: 'GET',
                     url: url,

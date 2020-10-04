@@ -6,19 +6,19 @@
     MasterFunction f = new MasterFunction();
     var formData = new FormMasterData();
 }
-@model ModuleData
+@model MenuData
 @{
     if (Model.Error == null)
     {
 
         try
         {
-    <form asp-action="ModuleData_Save"
+    <form asp-action="MenuData_Save"
           onsubmit="return jQueryAjaxPost(this)"
           autocomplete="off">
 
         @{
-            formData.Template = f.GetFormLayout("Form Master CRUD");
+            formData.Template = f.GetFormLayout("Form Master Menu");
             formData.ColField = 3;
             if (Model != null)
             {
@@ -33,7 +33,7 @@
             </div>
             <hr />
 
-            if (Model.IdModul == 0)
+            if (Model.idMenu == 0)
             {
                 <button type="submit" class="btn btn-outline-info" style="float:right;">
                     <span class="fa fa-save"></span> Create

@@ -10,6 +10,34 @@ using System.Data.SqlClient;
 
 namespace TicketingApp.Function
 {
+    public static class StringExtensions
+    {
+        public static string RemoveLast(this string text, string character)
+        {
+            if (text.Length < 1) return text;
+            return text.Remove(text.ToString().LastIndexOf(character), character.Length);
+        }
+        public static string Left(this string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            maxLength = Math.Abs(maxLength);
+
+            return (value.Length <= maxLength
+                   ? value
+                   : value.Substring(0, maxLength)
+                   );
+        }
+        public static string Right(this string value, int length)
+        {
+            return value.Substring(value.Length - length);
+        }
+        public static int ToInt(this string value)
+        {
+            return int.Parse(value);
+        }
+
+    }
+    
     public class GlobalFunction
     {
         public SqlConnection conn = new SqlConnection();
@@ -55,6 +83,7 @@ namespace TicketingApp.Function
             }
 
         }
+        
 
         #region UserPP
         public UserData GetProfileUser(string IdUser)

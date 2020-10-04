@@ -28,7 +28,7 @@ namespace TicketingApp.Controllers
         public async Task<IActionResult> Index()
         {
             Config.ConStr = _configuration.GetConnectionString("Db");
-            //HttpContext.Session.SetString("_UserId", GF.GenID());
+            
             try
             {
                 DeviceDetector.SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
@@ -64,6 +64,7 @@ namespace TicketingApp.Controllers
         #region LoginPage
         public async Task<IActionResult> SignIn(LoginContent data)
         {
+            Config.ConStr = _configuration.GetConnectionString("Db");
             return await Task.Run(() => View(data));
         }
         
@@ -71,6 +72,7 @@ namespace TicketingApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn_proccess([Bind("Username,Password,Platform")] UserLogin data)
         {
+            Config.ConStr = _configuration.GetConnectionString("Db");
             var r = new alert();
             try
             {

@@ -132,6 +132,9 @@
     <Folder Include="dbo\Tables\DataLog" />
     <Folder Include="dbo\Tables\DataApp" />
     <Folder Include="Scripts\" />
+    <Folder Include="dbo\Stored Procedures\Sp_Web\ModulData" />
+    <Folder Include="dbo\Stored Procedures\Sp_Web\MenuData" />
+    <Folder Include="dbo\Stored Procedures\Sp_Web\FormData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Functions\Roman.sql">
@@ -2167,15 +2170,25 @@
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
-    <Build Include="dbo\Stored Procedures\SP_Desktop\SP_ModuleData_Get.sql" />
     <None Include="Scripts\Insert Data Master Form.sql" />
     <Build Include="dbo\Tables\TableMaster\Master_Form.sql" />
     <Build Include="dbo\Tables\DataLog\DataInventory.sql" />
     <Build Include="dbo\Tables\Master_ListItem.sql" />
-    <Build Include="dbo\Stored Procedures\Sp_Web\SP_ModuleData_Get_ById.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\SP_LoginProc.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\SP_LoginProc_GetID.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\SP_GetProfileUser.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ModulData\SP_ModuleData_Del.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ModulData\SP_ModuleData_Get_ById.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ModulData\SP_ModuleData_Save.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_Get.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_Get_ById.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_Save.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ModulData\SP_ModuleData_Get.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_Del.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_Get.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_Save.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_Del.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

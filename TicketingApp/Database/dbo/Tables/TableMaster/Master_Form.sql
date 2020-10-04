@@ -8,7 +8,7 @@
 	[Controller] [nvarchar](max) NULL,
 	[ValueInput] [nvarchar](max) NULL,
 	[ListModel] [nvarchar](max) NULL,
-	[Urutan] [int] NULL,
+	[Urutan] [int] NOT NULL DEFAULT 0,
 	[ShowHide] [nvarchar](max) NULL,
 	[ReadOnly] [nvarchar](max) NULL,
 	[Enable] [nvarchar](max) NULL,

@@ -6,7 +6,7 @@
     var formData = new FormMasterData();
 }
 
-@model ModuleDataModel
+@model MenuDataModel
 @{
     if (Model.Error == null)
     {
@@ -20,13 +20,13 @@
 
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h4 class="text-themecolor">Module Data</h4>
+                <h4 class="text-themecolor">Menu Data</h4>
             </div>
             <div class="col-md-7 align-self-center text-right">
                 <div class="d-flex justify-content-end align-items-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Master</a></li>
-                        <li class="breadcrumb-item active">Module Data</li>
+                        <li class="breadcrumb-item active">Menu Data</li>
                     </ol>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                     <div class="card-header">
                         <button type="button" class="btn btn-info m-l-15"
                                 style="float:right"
-                                onclick="showInPopup('@Url.Action("ModuleData_Form","Master",new { id=0},Context.Request.Scheme)','Form Modul Data')">
+                                onclick="showInPopup('@Url.Action("MenuData_Form","Master",new { id=0},Context.Request.Scheme)','Form Menu Data')">
                             <i class="fa fa-plus-circle"></i> Create New
                         </button>
                        
@@ -55,7 +55,7 @@
                                     <div class="card-body">
                                         <form>
                                             @{
-                                                formData.Template = f.GetFormLayoutForFilter("Form Master CRUD");
+                                                formData.Template = f.GetFormLayoutForFilter("Form Master Menu");
                                                 formData.ColField = 3;
                                                 @await Html.PartialAsync("_LayoutFormFilter", formData)
                                                 <button type="submit" class="btn waves-effect waves-light btn-rounded btn-outline-primary">
@@ -70,7 +70,7 @@
                         </div>
                         <div style="margin-top:-30px;">
                             <div id="view-all">
-                                @await Html.PartialAsync("ModuleData_Table", Model)
+                                @await Html.PartialAsync("MenuData_Table", Model)
                             </div>
                         </div>
                     </div>

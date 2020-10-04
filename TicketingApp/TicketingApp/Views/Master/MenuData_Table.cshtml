@@ -1,5 +1,5 @@
 ﻿
-@model ModuleDataModel
+@model MenuDataModel
 
 @if (Model.Error != null)
 {
@@ -12,9 +12,10 @@
     <thead class="bg-dark text-light" style="font-family:Calibri;font-size:small;">
         <tr>
             <th width="30">no</th>
-            <th style="text-align:center;">NamaModule</th>
+            <th style="text-align:center;">NamaMenu</th>
             <th style="text-align:center;">Action</th>
             <th style="text-align:center;">Controller</th>
+            <th style="text-align:center;">Platform</th>
             <th style="text-align:center;">Img</th>
             <th style="text-align:center;">Status</th>
             <th style="text-align:center;">Delete</th>
@@ -27,33 +28,36 @@
             {
                 a++;
                 <tr>
+
                     <td nowrap align="center">@a</td>
                     <td nowrap align="left">
                         <a class="" style="text-align:left;"
-                           href="javascript:showInPopup('@Url.Action("ModuleData_Form","Master",new { id=item.IdModul},Context.Request.Scheme)','Form Modif Modul Data')">
-                            @item.NamaModule
+                           href="javascript:showInPopup('@Url.Action("MenuData_Form","Master",new { id=item.idMenu},Context.Request.Scheme)','Form Modif Menu Data')">
+                            @item.NamaMenu
                         </a>
                     </td>
                     <td nowrap align="left">@item.Action</td>
                     <td nowrap align="left">@item.Controller</td>
+                    <td nowrap align="left">@item.Platform</td>
                     <td nowrap align="center">
                         <img src="../../@item.Img"
                              style="max-width:32px;"
                              onerror="this.onerror=null; this.src='../../images/error/defaultImg.png'" />
                     </td>
                     <td nowrap align="center">
-                        @if (item.Status == 1)
-                        {
-                            <div class="badge badge-success">Aktif</div>
+                        @{
+                            @if (item.Status == 1)
+                            {
+                                <div class="badge badge-success">Aktif</div>
+                            }
+                            else
+                            {
+                                <div class="badge badge-danger">Non Aktif</div>
+                            }
                         }
-                        else
-                        {
-                            <div class="badge badge-danger">Non Aktif</div>
-                        }
-
                     </td>
                     <td nowrap align="center" width="30">
-                        <form asp-action="ModuleData_Delete" asp-route-Id="@item.IdModul" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
+                        <form asp-action="MenuData_Delete" asp-route-Id="@item.idMenu" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
                             <button type="submit"
                                     class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
                                     title="View">

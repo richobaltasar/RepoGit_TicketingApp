@@ -2,33 +2,40 @@
 <div class="row">
     @{
         GlobalFunction GF = new GlobalFunction();
-       
-        int a = 12 / Model.ColField;
-        foreach (var d in Model.Template)
+        try
         {
-            if (Model.dbContext != null)
+            int a = 12 / Model.ColField;
+            foreach (var d in Model.Template)
             {
-                d.ValueInput = GF.GetPropValue(Model.dbContext, d.Id.Trim());
-            }
+                if (Model.dbContext != null)
+                {
+                    var val = GF.GetPropValue(Model.dbContext, d.Id.Trim()) ?? "";
+                    d.ValueInput = val.ToString();
+                }
 
-            <div class="col-md-@a" @{if (d.ShowHide != "Show") { <text> hidden="hidden" </text>  } }>
-                <div class="form-group">
-                    <label class="control-label">
-                        @{
-                            if (d.Mandatory == "1")
-                            {
-                                @Html.Raw("*" + d.TextLabel);
+                <div class="col-md-@a" @{if (d.ShowHide != "Show") { <text> hidden="hidden" </text>  } }>
+                    <div class="form-group">
+                        <label class="control-label">
+                            @{
+                                if (d.Mandatory == "1")
+                                {
+                                    @Html.Raw("*" + d.TextLabel);
+                                }
+                                else
+                                {
+                                    @d.TextLabel
+                                }
                             }
-                            else
-                            {
-                                @d.TextLabel
-                            }
-                        }
 
-                    </label>
-                    @await Html.PartialAsync("_LayoutTypeInput", d)
+                        </label>
+                        @await Html.PartialAsync("_LayoutTypeInput", d)
+                    </div>
                 </div>
-            </div>
-        }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
     }
 </div>
