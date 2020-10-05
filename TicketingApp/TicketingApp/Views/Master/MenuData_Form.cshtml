@@ -14,7 +14,7 @@
         try
         {
     <form asp-action="MenuData_Save"
-          onsubmit="return jQueryAjaxPost(this)"
+          onsubmit="return MenuData_Post(this)"
           autocomplete="off">
 
         @{
@@ -47,67 +47,13 @@
             }
         }
     </form>
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    $("#error-alert").hide();
-                });
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#error-alert").hide();
+        });
 
-                jQueryAjaxPost = form => {
-                    try {
-                        $(".preloader").fadeIn();
-                        var Data = new FormData(form);
-                        if ($('#File_Img')[0].files.length > 0) {
-                            Data.append('File_Img', $('#File_Img')[0].files[0]);
-                        }
-                        $.ajax({
-                            type: 'POST',
-                            url: form.action,
-                            data: Data,
-                            contentType: false,
-                            processData: false,
-                            success: function (res) {
-                                console.log(res);
-                                if (res.isValid) {
-                                    $('#view-all').html(res.html)
-                                    $('#form-modal .modal-body').html('');
-                                    $('#form-modal .modal-title').html('');
-                                    $('#form-modal').modal('hide');
-                                    $.notify('submited Successfully', { globalPosition: 'top center', className: 'success' })
-                                }
-                                else {
-                                    $("#title-error").text(res.title);
-                                    $("#message_error").text(res.message);
-                                    $("#error-alert").show();
-                                    $("#error-alert").fadeTo(10000, 500).slideUp(500, function () {
-                                        $("#error-alert").slideUp(500); 
-                                    });
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                var err = eval("(" + xhr.responseText + ")");
-                                alert(err.Message);
-                                console.log(err);
-                                $("#title-error").text("Sorry");
-                                $("#message_error").text("ERROR !! " + err.responseText);
-                                $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
-                                    $("#error-alert").slideUp(500);
-                                });
-                            }
-                        })
-                        //to prevent default form submit event
-                        $(".preloader").fadeOut();
-                        return false;
-                    } catch (ex) {
-                        console.log(ex)
-                        $(".preloader").fadeOut();
-                        $("#title-error").text("Sorry");
-                        $("#message_error").text("ERROR !! ");
-                        $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
-                            $("#error-alert").slideUp(500);
-                        });
-                    }
-                }
-            </script>
+        
+    </script>
         }
         catch (Exception ex)
         {

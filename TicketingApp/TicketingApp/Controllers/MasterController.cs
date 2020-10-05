@@ -12,6 +12,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TicketingApp.Controllers
 {
@@ -600,7 +602,6 @@ namespace TicketingApp.Controllers
         }
         #endregion
 
-
         #region  ListItem Data
         public async Task<IActionResult> ListItemData()
         {
@@ -759,6 +760,242 @@ namespace TicketingApp.Controllers
                 return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
             }
         }
+        #endregion
+
+        #region Role Menu
+        public async Task<IActionResult> RoleMenuData()
+        {
+            Config.ConStr = _configuration.GetConnectionString("Db");
+            var model = new RoleMenuDataModel();
+            try
+            {
+                DeviceDetector.SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
+                BotParser botParser = new BotParser();
+                var userAgent = Request.Headers["User-Agent"];
+                var result = DeviceDetector.GetInfoFromUserAgent(userAgent);
+
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("_UserId")))
+                {
+                    var model2 = new alertLogin();
+                    return await Task.Run(() => RedirectToAction("SignIn", "Home", model2));
+                }
+                else
+                {
+                    ViewBag.UserId = HttpContext.Session.GetString("_UserId");
+                    ViewBag.Device = result.Match.DeviceType.ToString();
+                    Console.WriteLine(ViewBag.Device);
+                    var search = new RoleMenuData();
+                    model.ListData = await f.RoleMenuData_GetSearch(search);
+                    return await Task.Run(() => View(model));
+                }
+            }
+            catch (Exception ex)
+            {
+                var Error = new ErrorViewModel();
+                Error.MessageContent = ex.ToString();
+                Error.MessageTitle = "Error ";
+                Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = Error;
+                return await Task.Run(() => View(model));
+            }
+        }
+
+        [NoDirectAccess]
+        public async Task<IActionResult> RoleMenuData_Form(int id = 0)
+        {
+            var model = new RoleMenuData();
+            try
+            {
+                if (id == 0)
+                {
+                    model.IdRole = id;
+                    return await Task.Run(() => View(model));
+                }
+                else
+                {
+                    model = await f.RoleMenuData_GetById(id);
+
+                    if (model == null)
+                    {
+                        return NotFound();
+                    }
+                    return await Task.Run(() => View(model));
+                }
+            }
+            catch (Exception ex)
+            {
+                var Error = new ErrorViewModel();
+                Error.MessageContent = ex.ToString();
+                Error.MessageTitle = "Error ";
+                Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = Error;
+                return await Task.Run(() => View(model));
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RoleMenuData_Save([Bind("IdRole,IdModule,Posisi,IdParent,Urutan,IdMenu")] RoleMenuData data)
+        {
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    r = await f.RoleMenuData_Save(data);
+                    if (r.MessageStatus == "success")
+                    {
+                        var model = new RoleMenuDataModel();
+                        model.ListData = await f.RoleMenuData_Get();
+                        return Json(new { isValid = true});
+                    }
+                    else
+                    {
+                        data.Error = r;
+                        return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) });
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) });
+            }
+        }
+
+        [HttpPost, ActionName("RoleMenuData_Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RoleMenuData_Delete(int Id)
+        {
+            var model = new RoleMenuDataModel();
+            try
+            {
+                model.Error = await f.RoleMenuData_Del(Id);
+                if (model.Error.MessageStatus == "success")
+                {
+                    model.Error = null;
+                    model.ListData = await f.RoleMenuData_Get();
+                    return Json(new { isValid = true });
+                }
+                else
+                {
+                    model.ListData = await f.RoleMenuData_Get();
+                    return Json(new { isValid = false, message = model.Error.MessageContent, title = model.Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) });
+                }
+            }
+            catch (Exception ex)
+            {
+                var r = new ErrorViewModel();
+                r.MessageContent = ex.ToString();
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = r;
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RoleMenuData_Search([Bind("IdRole,IdModule,Posisi,IdParent,Urutan,IdMenu")] RoleMenuData data)
+        {
+            var model = new RoleMenuDataModel();
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.ListData = await f.RoleMenuData_GetSearch(data);
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) });
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    model.Error = r;
+                    model.ListData = await f.RoleMenuData_Get();
+                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", data) });
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = r;
+                model.ListData = await f.RoleMenuData_Get();
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RoleMenuData_GetMenu(int Id)
+        {
+            var model = new List<MenuData>();
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model = await f.MenuData_GetMenuByIdModule(Id);
+                    return Json(new { isValid = true, model});
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle});
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RoleMenuData_GetParent(int IdModule,int IdMenu,int IdPosisi)
+        {
+            var model = new List<SelectListItem>();
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model = await f.MenuData_GetParent(IdModule,IdMenu,IdPosisi);
+                    return Json(new { isValid = true, model });
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle });
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle });
+            }
+        }
+
         #endregion
     }
 }

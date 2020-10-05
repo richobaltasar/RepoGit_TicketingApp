@@ -482,6 +482,97 @@ namespace TicketingApp.Function
             }
             return res;
         }
+
+        public async Task<List<MenuData>> MenuData_GetMenuByIdModule(int IdModule)
+        {
+            var res = new List<MenuData>();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_MenuData_GetMenuByIdModule @Id="+IdModule+"" +
+                        "";
+
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                var d = new MenuData();
+                                Type type = d.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                                        {
+                                            if (p.PropertyType.Name.ToString() == "Int32")
+                                            {
+                                                int val = reader[p.Name].ToString().AsInt() ?? 0;
+                                                p.SetValue(d, val, null);
+                                            }
+                                            else
+                                            {
+                                                p.SetValue(d, reader[p.Name].ToString(), null);
+                                            }
+                                        }
+                                    }
+                                }
+                                res.Add(d);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+
+        public async Task<List<SelectListItem>> MenuData_GetParent(int IdModule, int IdMenu, int IdPosisi)
+        {
+            var res = new List<SelectListItem>();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_MenuData_GetParent " +
+                        "@IdModule=" + IdModule + "," +
+                        "@IdMenu="+ IdMenu + "," +
+                        "@IdPosisi=" + IdPosisi + "" +
+                        "";
+
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                var d = new SelectListItem();
+                                d.Text = reader["Text"].ToString();
+                                d.Value = reader["Value"].ToString();
+                                res.Add(d);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
         #endregion
 
         #region Form Data
@@ -1133,6 +1224,284 @@ namespace TicketingApp.Function
                                 data.Text = reader["Text"].ToString();
                                 data.Value = reader["Value"].ToString();
                                 res.Add(data);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        #endregion
+
+        #region RoleMenuData
+
+        public async Task<List<RoleMenuData>> RoleMenuData_Get()
+        {
+            var res = new List<RoleMenuData>();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_RoleMenuData_Get" +
+                        "";
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                var d = new RoleMenuData();
+                                Type type = d.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                                        {
+                                            if (p.PropertyType.Name.ToString() == "Int32")
+                                            {
+                                                int val = reader[p.Name].ToString().AsInt() ?? 0;
+                                                p.SetValue(d, val, null);
+                                            }
+                                            else
+                                            {
+                                                p.SetValue(d, reader[p.Name].ToString(), null);
+                                            }
+                                        }
+                                    }
+                                }
+                                res.Add(d);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        public async Task<ErrorViewModel> RoleMenuData_Save(RoleMenuData Data)
+        {
+            var res = new ErrorViewModel();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_RoleMenuData_Save ";
+                    Type type = Data.GetType();
+                    PropertyInfo[] props = type.GetProperties();
+                    foreach (var p in props)
+                    {
+                        if (null != p && p.CanWrite)
+                        {
+                            if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                            {
+                                string param = "";
+                                if (p.PropertyType.Name.ToString() == "String")
+                                {
+                                    if(p.GetValue(Data) != null)
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    }
+                                }
+                                else
+                                {
+                                    var val = p.GetValue(Data) ?? "";
+                                    param = "@" + p.Name + "=" + val.ToString() + ",";
+                                }
+                                sql = sql + param;
+                            }
+                        }
+                    }
+
+                    sql = sql.RemoveLast(",");
+
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                res.MessageTitle = reader["Title"].ToString();
+                                res.MessageContent = reader["Message"].ToString();
+                                res.MessageStatus = reader["Status"].ToString();
+                                res.RequestId = reader["Id"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        public async Task<ErrorViewModel> RoleMenuData_Del(int Id)
+        {
+            var res = new ErrorViewModel();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_RoleMenuData_Del @Id=" + Id.ToString() + "" +
+                        "";
+
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                res.MessageTitle = reader["Title"].ToString();
+                                res.MessageContent = reader["Message"].ToString();
+                                res.MessageStatus = reader["Status"].ToString();
+                                res.RequestId = reader["Id"].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        public async Task<RoleMenuData> RoleMenuData_GetById(int Id)
+        {
+            var res = new RoleMenuData();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_RoleMenuData_GetById @Id=" + Id + "" +
+                        "";
+
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                Type type = res.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                                        {
+                                            if (p.PropertyType.Name.ToString() == "Int32")
+                                            {
+                                                int val = reader[p.Name].ToString().AsInt() ?? 0;
+                                                p.SetValue(res, val, null);
+                                            }
+                                            else
+                                            {
+                                                p.SetValue(res, reader[p.Name].ToString(), null);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+        public async Task<List<RoleMenuData>> RoleMenuData_GetSearch(RoleMenuData Data)
+        {
+            var res = new List<RoleMenuData>();
+            try
+            {
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_RoleMenuData_GetSearch ";
+                    Type type1 = Data.GetType();
+                    PropertyInfo[] props1 = type1.GetProperties();
+                    foreach (var p in props1)
+                    {
+                        if (null != p && p.CanWrite)
+                        {
+                            if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                            {
+                                string param = "";
+                                if (p.PropertyType.Name.ToString() == "String")
+                                {
+                                    if(p.GetValue(Data)!= null)
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    }
+                                }
+                                else
+                                {
+                                    var val = p.GetValue(Data) ?? "";
+                                    param = "@" + p.Name + "=" + val.ToString() + ",";
+                                }
+                                sql = sql + param;
+                            }
+                        }
+                    }
+
+                    sql = sql.RemoveLast(",");
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                var d = new RoleMenuData();
+                                Type type = d.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                                        {
+                                            if (p.PropertyType.Name.ToString() == "Int32")
+                                            {
+                                                int val = reader[p.Name].ToString().AsInt() ?? 0;
+                                                p.SetValue(d, val, null);
+                                            }
+                                            else
+                                            {
+                                                p.SetValue(d, reader[p.Name].ToString(), null);
+                                            }
+                                        }
+                                    }
+                                }
+                                res.Add(d);
                             }
                         }
                     }

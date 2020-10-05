@@ -1,0 +1,136 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "";
+    MasterFunction f = new MasterFunction();
+    var formData = new FormMasterData();
+}
+@model RoleMenuData
+@{
+    if (Model.Error == null)
+    {
+
+        try
+        {
+            <form asp-action="RoleMenuData_Save"
+                  onsubmit="return RoleMenuData_Save(this)"
+                  autocomplete="off">
+
+                @{
+                    formData.Template = f.GetFormLayout("Form RoleMenuData");
+                    formData.ColField = 2;
+                    if (Model != null)
+                    {
+                        formData.dbContext = Model;
+                    }
+                    @await Html.PartialAsync("_LayoutForm", formData)
+
+                <script type="text/javascript">
+                $(document).ready(function () {
+
+                    $('#Posisi').on('change', function (e) {
+                        var optionSelected = $("option:selected", this);
+                        var IdPosisi = this.value;
+                        if (IdPosisi > 1) {
+                            var IdModule = $('#IdModule option:selected').val();
+                            var IdMenu = $('#IdMenu option:selected').val();
+                            GetParent(IdModule, IdMenu, IdPosisi);
+                        }
+                        else {
+                            $('#IdParent').empty();
+                        }
+                    });
+
+
+                    var IdModule = $('#IdModule option:selected').val();
+                    var IdMenu = $('#IdMenu option:selected').val();
+                    var IdPosisi = $('#Posisi option:selected').val();
+
+                    GetParent(IdModule, IdMenu, IdPosisi);
+
+                    function GetParent(IdModule,IdMenu,IdPosisi) {
+                        $('#IdParent').empty();
+                        $(".preloader").fadeIn();
+                        $.ajax({
+                            type: 'GET',
+                            url: '@Url.Action("RoleMenuData_GetParent", "Master")' + '?IdModule=' + IdModule + '&IdMenu=' + IdMenu + '&IdPosisi=' + IdPosisi,
+                            success: function (res) {
+                                if (res.isValid) {
+                                    $.each(res.model, function (idx, obj) {
+                                        console.log(obj);
+                                        var optionText = "";
+                                        var optionValue = 0;
+                                        $.each(obj, function (key, value) {
+                                            if (key == "value") {
+                                                optionValue = value;
+                                            }
+                                            else if (key == "text") {
+                                                optionText = value;
+                                            }
+                                        });
+                                        $('#IdParent').append(new Option(optionText, optionValue));
+                                    });
+                                    $("#IdParent option[value='@Model.IdParent']").prop('selected', true);
+                                }
+                                else {
+                                    $.notify('Sorry ' + res.message, { globalPosition: 'top center', className: 'warning' })
+                                }
+                                $(".preloader").fadeOut();
+                            },
+                            error: function (request, status, error) {
+                                console.log(error.responseText);
+                                $.notify('Sorry ' + error.responseText, { globalPosition: 'top center', className: 'warning' })
+                                $(".preloader").fadeOut();
+                            }
+                        });
+                    }
+
+
+                });
+                </script>
+                    <div class="alert alert-danger" id="error-alert">
+
+                        <strong id="title-error"></strong>
+                        <br />
+                        <div id="message_error" style="overflow-x:auto;"></div>
+                    </div>
+                    <hr />
+
+                    if (Model.IdRole == 0)
+                    {
+                        <button type="submit" class="btn btn-outline-info" style="float:right;">
+                            <span class="fa fa-save"></span> Create
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-outline-info" style="float:right;margin-left:10px;">
+                            <span class="fa fa-save"></span> Simpan
+                        </button>
+                    }
+                }
+            </form>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#error-alert").hide();
+
+                });
+                
+            </script>
+        }
+        catch (Exception ex)
+        {
+            var Error = new ErrorViewModel();
+            Error.MessageContent = ex.ToString();
+            Error.MessageTitle = "Error ";
+            Error.RequestId = Activity.Current?.Id ?? "0";
+            @await Html.PartialAsync("Error", Error)
+        }
+    }
+    else
+    {
+        @await Html.PartialAsync("Error", Model.Error)
+    }
+}
+

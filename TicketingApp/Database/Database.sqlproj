@@ -136,6 +136,7 @@
     <Folder Include="dbo\Stored Procedures\Sp_Web\MenuData" />
     <Folder Include="dbo\Stored Procedures\Sp_Web\FormData" />
     <Folder Include="dbo\Stored Procedures\Sp_Web\ListItemData" />
+    <Folder Include="dbo\Stored Procedures\Sp_Web\RoleMenuData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Functions\Roman.sql">
@@ -1096,10 +1097,6 @@
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <Build Include="dbo\Stored Procedures\SP_web_old\SP_GetKeranjangTicketCancel.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="dbo\Stored Procedures\SP_web_old\SP_GetListDataMaster.sql">
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
@@ -2197,6 +2194,17 @@
     <Build Include="dbo\Stored Procedures\Sp_Web\FormData\SP_FormData_GetSearch.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\ListItemData\SP_ListItemData_GetSearch.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_GetSearch.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\RoleMenuData\SP_RoleMenuData_Get.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\RoleMenuData\SP_RoleMenuData_Save.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\RoleMenuData\SP_RoleMenuData_Del.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\RoleMenuData\SP_RoleMenuData_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\RoleMenuData\SP_RoleMenuData_GetSearch.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ListItemData\SP_GetListDataMaster.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_GetMenuByIdModule.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_GetParent.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

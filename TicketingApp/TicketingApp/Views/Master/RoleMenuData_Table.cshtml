@@ -1,0 +1,106 @@
+﻿
+@model RoleMenuDataModel
+
+@if (Model.Error != null)
+{
+    @await Html.PartialAsync("Error", Model.Error)
+}
+@if(Model.ListData != null)
+{
+<table id="myTable"
+       class="display no-wrap table table-hover table-striped table-bordered compact"
+       cellspacing="0">
+    <thead class="bg-dark text-light" style="font-family:Calibri;font-size:small;">
+        <tr>
+            <th width="30">no</th>
+            <th style="text-align:center;">Nama Module</th>
+            <th style="text-align:center;">Nama Menu</th>
+            <th style="text-align:center;">Platform</th>
+            <th style="text-align:center;">Posisi</th>
+            <th style="text-align:center;">Nama Parent</th>
+            <th style="text-align:center;">Index</th>
+
+            <th style="text-align:center;" width="30">Action</th>
+        </tr>
+    </thead>
+    <tbody style="font-size:small;font-family:Calibri;">
+        @{
+            int a = 0;
+            foreach (var item in Model.ListData)
+            {
+                a++;
+                <tr>
+                    <td nowrap align="center">@a</td>
+                    <td nowrap align="left">
+                        @item.NamaModule
+                    </td>
+                    <td nowrap align="left">
+                        <a class="" style="text-align:left;"
+                            href="javascript:showInPopup('@Url.Action("MenuData_Form","Master",new { id=item.IdMenu},Context.Request.Scheme)','Form Modif Menu Data')">
+                            @item.NamaMenu
+                        </a>
+                    </td>
+                    <td nowrap align="center" width="30">@item.Platform</td>
+                    <td nowrap align="left" width="30">@item.NamaPosisi</td>
+                    <td nowrap align="left" width="30">@item.NamaParent</td>
+                    <td nowrap align="center" width="30">@item.Urutan</td>
+                    <td nowrap align="center" width="30">
+                        <a class="" style="text-align:left;"
+                           href="javascript:showInPopup('@Url.Action("RoleMenuData_Form","Master",new { id=item.IdRole},Context.Request.Scheme)','Form Modif Role Menu Data')">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <form asp-action="RoleMenuData_Delete" asp-route-Id="@item.IdRole" onsubmit="return RoleMenuData_Delete(this);" class="d-inline">
+                            <button type="submit"
+                                    class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
+                                    title="View">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(function () {
+        var collapsedGroups = {};
+        var table = $('#myTable').DataTable({
+            "info": false,
+            "scrollX": true,
+            "autoWidth": false,
+            "paging": true,
+            scrollY: "50vh",
+            scrollX: !0,
+            scrollCollapse: !0,
+            iDisplayLength: 100,
+            searching: true,
+            order: [[1, 'asc']],
+            rowGroup: {
+                // Uses the 'row group' plugin
+                dataSrc: 1,
+                startRender: function (rows, group) {
+                    var collapsed = !!collapsedGroups[group];
+
+                    rows.nodes().each(function (r) {
+                        r.style.display = collapsed ? 'none' : '';
+                    });
+
+                    // Add category name to the <tr>. NOTE: Hardcoded colspan
+                    return $('<tr/>')
+                        .append('<td colspan="8">' + group + ' (' + rows.count() + ')</td>')
+                        .attr('data-name', group)
+                        .toggleClass('collapsed', collapsed);
+                }
+            }
+        });
+        $('#myTable tbody').on('click', 'tr.group-start', function () {
+            var name = $(this).data('name');
+            console.log(name);
+            collapsedGroups[name] = !collapsedGroups[name];
+            table.draw(false);
+        }); 
+    });
+</script>
+}

@@ -6,7 +6,7 @@
     var formData = new FormMasterData();
 }
 
-@model MenuDataModel
+@model RoleMenuDataModel
 @{
     if (Model.Error == null)
     {
@@ -18,21 +18,19 @@
 
         <link href="~/assets/datatables/rowGroup.dataTables.min.css" rel="stylesheet" />
         <script src="~/assets/datatables/dataTables.rowGroup.min.js"></script>
-
+        
         <script src="~/assets/dropify/dropify.min.js"></script>
         <link href="~/assets/dropify/dropify.min.css" rel="stylesheet" />
 
-
-
         <div class="row page-titles">
             <div class="col-md-5 align-self-center">
-                <h4 class="text-themecolor">Menu Data</h4>
+                <h4 class="text-themecolor">Role Menu Data</h4>
             </div>
             <div class="col-md-7 align-self-center text-right">
                 <div class="d-flex justify-content-end align-items-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Master</a></li>
-                        <li class="breadcrumb-item active">Menu Data</li>
+                        <li class="breadcrumb-item active">Role Menu Data</li>
                     </ol>
                 </div>
             </div>
@@ -44,7 +42,7 @@
                     <div class="card-header">
                         <button type="button" class="btn btn-info m-l-15"
                                 style="float:right"
-                                onclick="showInPopup('@Url.Action("MenuData_Form","Master",new { id=0},Context.Request.Scheme)','Form Menu Data')">
+                                onclick="showInPopup('@Url.Action("RoleMenuData_Form","Master",new { id=0},Context.Request.Scheme)','Form Role Menu Data')">
                             <i class="fa fa-plus-circle"></i> Create New
                         </button>
 
@@ -59,9 +57,9 @@
                             <div class="card">
                                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <form asp-action="MenuData_Search" onsubmit="return jQueryAjaxSearch(this)">
+                                        <form asp-action="RoleMenuData_Search" id="RoleMenuData_Search_Id">
                                             @{
-                                                formData.Template = f.GetFormLayoutForFilter("Form Master Menu");
+                                                formData.Template = f.GetFormLayoutForFilter("Form RoleMenuData");
                                                 formData.ColField = 3;
                                                 @await Html.PartialAsync("_LayoutFormFilter", formData)
                                                 <button type="submit" class="btn waves-effect waves-light btn-rounded btn-outline-primary">
@@ -76,7 +74,7 @@
                         </div>
                         <div style="margin-top:-30px;">
                             <div id="view-all">
-                                @await Html.PartialAsync("MenuData_Table", Model)
+                                @await Html.PartialAsync("RoleMenuData_Table", Model)
                             </div>
                         </div>
                     </div>
@@ -100,8 +98,8 @@
         </div>
 
         <script type="text/javascript">
+            //---- Action RoleMenuData
             showInPopup = (url, title) => {
-
                 $.ajax({
                     type: 'GET',
                     url: url,
@@ -117,7 +115,7 @@
                 });
 
             }
-            jQueryAjaxSearch = form => {
+            RoleMenuData_Save = form => {
                 try {
                     $(".preloader").fadeIn();
                     var Data = new FormData(form);
@@ -130,42 +128,7 @@
                         success: function (res) {
                             console.log(res);
                             if (res.isValid) {
-                                $('#view-all').html(res.html)
-                            }
-                            else {
-                                alert(res.title + "/n" + res.message);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            var err = eval("(" + xhr.responseText + ")");
-                            alert(err.Message);
-                        }
-                    })
-                    //to prevent default form submit event
-                    $(".preloader").fadeOut();
-                    return false;
-                } catch (ex) {
-                    console.log(ex)
-                    alert("Sorry Error : " + "/n" + ex.message);
-                }
-            }
-            MenuData_Post = form => {
-                try {
-                    $(".preloader").fadeIn();
-                    var Data = new FormData(form);
-                    if ($('#File_Img')[0].files.length > 0) {
-                        Data.append('File_Img', $('#File_Img')[0].files[0]);
-                    }
-                    $.ajax({
-                        type: 'POST',
-                        url: form.action,
-                        data: Data,
-                        contentType: false,
-                        processData: false,
-                        success: function (res) {
-                            console.log(res);
-                            if (res.isValid) {
-                                $('#view-all').html(res.html)
+                                $('#RoleMenuData_Search_Id').submit();
                                 $('#form-modal .modal-body').html('');
                                 $('#form-modal .modal-title').html('');
                                 $('#form-modal').modal('hide');
@@ -204,6 +167,167 @@
                     });
                 }
             }
+            RoleMenuData_Delete = form => {
+                if (confirm('Are you sure to delete this record ?')) {
+                    try {
+                        $.ajax({
+                            type: 'POST',
+                            url: form.action,
+                            data: new FormData(form),
+                            contentType: false,
+                            processData: false,
+                            success: function (res) {
+                                if (res.isValid) {
+                                    $('#RoleMenuData_Search_Id').submit();
+                                    $.notify("Data berhasil dihapus", { globalPosition: 'top center', className: 'success' })
+                                }
+                                else {
+                                    $.notify('Sorry ' + res.message, { globalPosition: 'top center', className: 'warning' })
+                                }
+                            },
+                            error: function (err) {
+                                $.notify('Sorry ' + err.responseText, { globalPosition: 'top center', className: 'warning' })
+                            }
+                        })
+                    } catch (ex) {
+                        $.notify('Sorry ' + ex.message, { globalPosition: 'top center', className: 'warning' })
+
+                    }
+                    $(".preloader").fadeOut();
+                }
+
+                //prevent default form submit event
+                return false;
+            }
+
+            function GetMenu(Id) {
+                    $('#Filter_IdMenu').find('option:not(:first)').remove();
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("RoleMenuData_GetMenu", "Master")' + '?Id=' + Id,
+                        success: function (res) {
+                            if (res.isValid) {
+                                $.each(res.model, function (idx, obj) {
+                                    var optionText = "";
+                                    var optionValue = 0;
+                                    $.each(obj, function (key, value) {
+                                        if (key == "idMenu") {
+                                            optionValue = value;
+                                        }
+                                        else if (key == "namaMenu") {
+                                            optionText = value;
+                                        }
+                                    });
+                                    $('#Filter_IdMenu').append(new Option(optionText, optionValue));
+                                });
+                            }
+                            else {
+                                $.notify('Sorry ' + re.message, { globalPosition: 'top center', className: 'warning' })
+                            }
+                            $(".preloader").fadeOut();
+                        },
+                        error: function (request, status, error) {
+                            console.log(error.responseText);
+                            $.notify('Sorry ' + error.responseText, { globalPosition: 'top center', className: 'warning' })
+                            $(".preloader").fadeOut();
+                        }
+                    });
+                }
+            //-------------------------------
+            // External
+            MenuData_Post = form => {
+                try {
+                    $(".preloader").fadeIn();
+                    var Data = new FormData(form);
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action,
+                        data: Data,
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+                            console.log(res);
+                            if (res.isValid) {
+                                $('#RoleMenuData_Search_Id').submit();
+                                $('#form-modal .modal-body').html('');
+                                $('#form-modal .modal-title').html('');
+                                $('#form-modal').modal('hide');
+                                $.notify('submited Successfully', { globalPosition: 'top center', className: 'success' })
+                            }
+                            else {
+                                $("#title-error").text(res.title);
+                                $("#message_error").text(res.message);
+                                $("#error-alert").show();
+                                $("#error-alert").fadeTo(10000, 500).slideUp(500, function () {
+                                    $("#error-alert").slideUp(500);
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message);
+                            console.log(err);
+                            $("#title-error").text("Sorry");
+                            $("#message_error").text("ERROR !! " + err.responseText);
+                            $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                                $("#error-alert").slideUp(500);
+                            });
+                        }
+                    })
+                    //to prevent default form submit event
+                    $(".preloader").fadeOut();
+                    return false;
+                } catch (ex) {
+                    console.log(ex)
+                    $(".preloader").fadeOut();
+                    $("#title-error").text("Sorry");
+                    $("#message_error").text("ERROR !! ");
+                    $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                        $("#error-alert").slideUp(500);
+                    });
+                }
+            }
+            //-------------------------------
+            $(function () {
+                $("#RoleMenuData_Search_Id").submit(function (e){
+                    try {
+                        e.preventDefault();
+                        var Data = new FormData(document.querySelector('form'))
+                        $.ajax({
+                            type: 'POST',
+                            url: document.querySelector('form').action,
+                            data: Data,
+                            contentType: false,
+                            processData: false,
+                            success: function (res) {
+                                if (res.isValid) {
+                                    $('#view-all').html(res.html)
+                                }
+                                else {
+                                    alert(res.title + "/n" + res.message);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                var err = eval("(" + xhr.responseText + ")");
+                                alert(err.Message);
+                            }
+                        })
+                        //to prevent default form submit event
+                        return false;
+                    }
+                    catch (ex) {
+                        $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                            $("#error-alert").slideUp(500);
+                        });
+                    }
+                });
+                $('#Filter_IdModule').on('change', function (e) {
+                    var optionSelected = $("option:selected", this);
+                    var valueSelected = this.value;
+                    GetMenu(valueSelected);
+                });
+            });
+
         </script>
     }
     else

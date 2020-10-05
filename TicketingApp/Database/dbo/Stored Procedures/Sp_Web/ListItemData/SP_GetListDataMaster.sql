@@ -160,5 +160,34 @@ BEGIN
 			) q
 			order by q.Text
 		end
+		else if(@Data ='ListModule')
+		begin
+            select*from 
+			(
+				select '' Text, 0 Value
+				union all
+
+				select
+				NamaModule Text,IdModul Value
+				from DataModule
+
+			) q
+			order by q.Text
+		end
+		else if(@Data ='ListMenu')
+		begin
+            select*from 
+			(
+				select '' Text, 0 Value
+				union all
+
+				select
+				NamaMenu Text,idMenu Value
+				from DataMenu
+
+			) q
+			order by q.Text
+		end
+		
 	end
 END

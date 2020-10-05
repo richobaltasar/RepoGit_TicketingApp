@@ -24,7 +24,7 @@
                         @{ if (Model.Enable == "disable") { <text> disabled </text>  }}
                         class="form-control custom-select">
                     @{
-                        dynamic t = null;
+                        dynamic t = null; 
                         t = f.GetListDataMaster(Model.ListModel);
                         @foreach (var dd in t)
                         {
