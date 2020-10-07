@@ -95,7 +95,7 @@ namespace TicketingApp.Function
         
 
         #region UserPP
-        public UserData GetProfileUser(string IdUser)
+        public UserData GetProfileUser(int IdUser)
         {
             var res = new UserData();
             try
@@ -119,9 +119,17 @@ namespace TicketingApp.Function
                                 {
                                     if (null != p && p.CanWrite)
                                     {
-                                        if (p.Name != "" && p.Name != "Error")
+                                        if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
                                         {
-                                            p.SetValue(res, reader[p.Name].ToString(), null);
+                                            if (p.PropertyType.Name.ToString() == "Int32")
+                                            {
+                                                int val = reader[p.Name].ToString().AsInt() ?? 0;
+                                                p.SetValue(res, val, null);
+                                            }
+                                            else
+                                            {
+                                                p.SetValue(res, reader[p.Name].ToString(), null);
+                                            }
                                         }
                                     }
                                 }

@@ -1,0 +1,73 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "";
+    MasterFunction f = new MasterFunction();
+    var formData = new FormMasterData();
+}
+@model UserData
+@{
+    if (Model.Error == null)
+    {
+
+        try
+        {
+            <form asp-action="UserData_Save"
+                  onsubmit="return UserData_Save(this)"
+                  autocomplete="off">
+
+                @{
+                    formData.Template = f.GetFormLayout("Form UserData");
+                    formData.ColField = 3;
+                    if (Model != null)
+                    {
+                        formData.dbContext = Model;
+                    }
+                    @await Html.PartialAsync("_LayoutForm", formData)
+
+                    <div class="alert alert-danger" id="error-alert">
+
+                        <strong id="title-error"></strong>
+                        <br />
+                        <div id="message_error" style="overflow-x:auto;"></div>
+                    </div>
+                    <hr />
+
+                    if (Model.id == 0)
+                    {
+                        <button type="submit" class="btn btn-outline-info" style="float:right;">
+                            <span class="fa fa-save"></span> Create
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-outline-info" style="float:right;margin-left:10px;">
+                            <span class="fa fa-save"></span> Simpan
+                        </button>
+                    }
+                }
+            </form>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#error-alert").hide();
+
+                });
+                
+            </script>
+        }
+        catch (Exception ex)
+        {
+            var Error = new ErrorViewModel();
+            Error.MessageContent = ex.ToString();
+            Error.MessageTitle = "Error ";
+            Error.RequestId = Activity.Current?.Id ?? "0";
+            @await Html.PartialAsync("Error", Error)
+        }
+    }
+    else
+    {
+        @await Html.PartialAsync("Error", Model.Error)
+    }
+}
+

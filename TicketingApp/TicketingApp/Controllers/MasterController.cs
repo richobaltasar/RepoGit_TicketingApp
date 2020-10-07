@@ -52,7 +52,9 @@ namespace TicketingApp.Controllers
                     ViewBag.UserId = HttpContext.Session.GetString("_UserId");
                     ViewBag.Device = result.Match.DeviceType.ToString();
                     Console.WriteLine(ViewBag.Device);
-                    model.ListData = await f.ModuleData_Get();
+                    var data = new ModuleData();
+                    data.Status = 1;
+                    model.ListData = await f.ModuleData_GetSearch(data);
                     return await Task.Run(() => View(model));
                 }
             }
@@ -154,8 +156,7 @@ namespace TicketingApp.Controllers
                     if (r.MessageStatus == "success")
                     {
                         var model = new ModuleDataModel();
-                        model.ListData = await f.ModuleData_Get();
-                        return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ModuleData_Table", model) });
+                        return await Task.Run(() => Json(new { isValid = true }));
                     }
                     else
                     {
@@ -164,7 +165,7 @@ namespace TicketingApp.Controllers
                         Error.MessageTitle = r.MessageTitle;
                         Error.RequestId = r.RequestId;
                         data.Error = Error;
-                        return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ModuleData_Form", data) });
+                        return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ModuleData_Form", data) }));
                     }
                 }
                 catch (Exception ex)
@@ -173,7 +174,7 @@ namespace TicketingApp.Controllers
                     Error.MessageContent = ex.ToString();
                     Error.MessageTitle = "Error ";
                     Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                    return Json(new { isValid = false, message = Error.MessageContent, title = Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "ModuleData_Form", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = Error.MessageContent, title = Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "ModuleData_Form", data) }));
                 }
             }
             else
@@ -182,7 +183,7 @@ namespace TicketingApp.Controllers
                 Error.MessageContent = "State Model tidak valid";
                 Error.MessageTitle = "Error ";
                 Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                return Json(new { isValid = false, message = Error.MessageContent, title = Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "ModuleData_Form", data) });
+                return await Task.Run(() => Json(new { isValid = false, message = Error.MessageContent, title = Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "ModuleData_Form", data) }));
             }
         }
 
@@ -194,8 +195,7 @@ namespace TicketingApp.Controllers
             var r =  await f.ModuleData_Del(Id);
             if (r.MessageStatus == "success")
             {
-                model.ListData = await f.ModuleData_Get();
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ModuleData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = true }));
             }
             else
             {
@@ -205,7 +205,41 @@ namespace TicketingApp.Controllers
                 Error.MessageTitle = r.MessageTitle;
                 Error.RequestId = r.RequestId;
                 model.Error = Error;
-                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "ModuleData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "ModuleData_Table", model) }));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ModuleData_Search([Bind("IdModul,NamaModule,Action,Controller,Img,Status")] ModuleData data)
+        {
+            var model = new ModuleDataModel();
+            var r = new ErrorViewModel();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.ListData = await f.ModuleData_GetSearch(data);
+                    return await Task.Run(() => Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ModuleData_Table", model) }));
+                }
+                catch (Exception ex)
+                {
+                    r.MessageContent = ex.ToString();
+                    r.MessageTitle = "Error ";
+                    r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                    model.Error = r;
+                    model.ListData = await f.ModuleData_Get();
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ModuleData_Table", model) }));
+                }
+            }
+            else
+            {
+                r.MessageContent = "State Model tidak valid";
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = r;
+                model.ListData = await f.ModuleData_Get();
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ModuleData_Table", model) }));
             }
         }
         #endregion
@@ -232,7 +266,8 @@ namespace TicketingApp.Controllers
                     ViewBag.UserId = HttpContext.Session.GetString("_UserId");
                     ViewBag.Device = result.Match.DeviceType.ToString();
                     Console.WriteLine(ViewBag.Device);
-                    model.ListData = await f.MenuData_Get();
+                    var data = new MenuData();
+                    model.ListData = await f.MenuData_GetSearch(data);
                     return await Task.Run(() => View(model));
                 }
             }
@@ -333,9 +368,7 @@ namespace TicketingApp.Controllers
                     r = await f.MenuData_Save(data);
                     if (r.MessageStatus == "success")
                     {
-                        var model = new MenuDataModel();
-                        model.ListData = await f.MenuData_Get();
-                        return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) });
+                        return await Task.Run(() => Json(new { isValid = true}));
                     }
                     else
                     {
@@ -344,7 +377,7 @@ namespace TicketingApp.Controllers
                         Error.MessageTitle = r.MessageTitle;
                         Error.RequestId = r.RequestId;
                         data.Error = Error;
-                        return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Form", data) });
+                        return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Form", data) }));
                     }
                 }
                 catch (Exception ex)
@@ -353,7 +386,7 @@ namespace TicketingApp.Controllers
                     Error.MessageContent = ex.ToString();
                     Error.MessageTitle = "Error ";
                     Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                    return Json(new { isValid = false, message = Error.MessageContent, title = Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Form", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = Error.MessageContent, title = Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Form", data) }));
                 }
             }
             else
@@ -362,7 +395,7 @@ namespace TicketingApp.Controllers
                 Error.MessageContent = "State Model tidak valid";
                 Error.MessageTitle = "Error ";
                 Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                return Json(new { isValid = false, message = Error.MessageContent, title = Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Form", data) });
+                return await Task.Run(() => Json(new { isValid = false, message = Error.MessageContent, title = Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Form", data) }));
             }
         }
 
@@ -388,7 +421,7 @@ namespace TicketingApp.Controllers
                 }
 
                 model.ListData = await f.MenuData_Get();
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = true }));
             }
             catch(Exception ex)
             {
@@ -398,7 +431,7 @@ namespace TicketingApp.Controllers
                 Error.MessageTitle = "Error ";
                 Error.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                 model.Error = Error;
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) }));
             }
             
         }
@@ -414,7 +447,7 @@ namespace TicketingApp.Controllers
                 try
                 {
                     model.ListData = await f.MenuData_GetSearch(data);
-                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) });
+                    return await Task.Run(() => Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) }));
                 }
                 catch (Exception ex)
                 {
@@ -423,7 +456,7 @@ namespace TicketingApp.Controllers
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                     model.Error = r;
                     model.ListData = await f.MenuData_Get();
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Table", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Table", data) }));
                 }
             }
             else
@@ -433,7 +466,7 @@ namespace TicketingApp.Controllers
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                 model.Error = r;
                 model.ListData = await f.MenuData_Get();
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "MenuData_Table", model) }));
             }
         }
 
@@ -525,14 +558,12 @@ namespace TicketingApp.Controllers
                     r = await f.FormData_Save(data);
                     if (r.MessageStatus == "success")
                     {
-                        var model = new FormDataModel();
-                        model.ListData = await f.FormData_Get();
-                        return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) });
+                        return await Task.Run(() => Json(new { isValid = true }));
                     }
                     else
                     {
                         data.Error = r;
-                        return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Form", data) });
+                        return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Form", data) }));
                     }
                 }
                 catch (Exception ex)
@@ -540,7 +571,7 @@ namespace TicketingApp.Controllers
                     r.MessageContent = ex.ToString();
                     r.MessageTitle = "Error ";
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Form", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Form", data) }));
                 }
             }
             else
@@ -548,7 +579,7 @@ namespace TicketingApp.Controllers
                 r.MessageContent = "State Model tidak valid";
                 r.MessageTitle = "Error ";
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Form", data) });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Form", data) }));
             }
         }
 
@@ -556,15 +587,29 @@ namespace TicketingApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> FormData_Delete(int Id)
         {
+
             var model = new FormDataModel();
-            model.Error = await f.FormData_Del(Id);
-            if (model.Error.MessageStatus == "success")
+            try
             {
-                model.Error = null;
+                model.Error = await f.FormData_Del(Id);
+                if (model.Error.MessageStatus == "success")
+                {
+                    model.Error = null;
+                    return await Task.Run(() => Json(new { isValid = true }));
+                }
+                else
+                {
+                    return await Task.Run(() => Json(new { isValid = false, message = model.Error.MessageContent, title = model.Error.MessageTitle }));
+                }
             }
-            
-            model.ListData = await f.FormData_Get();
-            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) });
+            catch (Exception ex)
+            {
+                var r = new ErrorViewModel();
+                r.MessageContent = ex.ToString();
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle }));
+            }
         }
 
         [HttpPost]
@@ -578,7 +623,7 @@ namespace TicketingApp.Controllers
                 try
                 {
                     model.ListData = await f.FormData_GetSearch(data);
-                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) });
+                    return await Task.Run(() => Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) }));
                 }
                 catch (Exception ex)
                 {
@@ -587,7 +632,7 @@ namespace TicketingApp.Controllers
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                     model.Error = r;
                     model.ListData = await f.FormData_Get();
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Table", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Table", data) }));
                 }
             }
             else
@@ -597,9 +642,10 @@ namespace TicketingApp.Controllers
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                 model.Error = r;
                 model.ListData = await f.FormData_Get();
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "FormData_Table", model) }));
             }
         }
+
         #endregion
 
         #region  ListItem Data
@@ -624,7 +670,8 @@ namespace TicketingApp.Controllers
                     ViewBag.UserId = HttpContext.Session.GetString("_UserId");
                     ViewBag.Device = result.Match.DeviceType.ToString();
                     Console.WriteLine(ViewBag.Device);
-                    model.ListData = await f.ListItemData_Get();
+                    var filter = new ListItemData();
+                    model.ListData = await f.ListItemData_GetSearch(filter);
                     return await Task.Run(() => View(model));
                 }
             }
@@ -686,13 +733,13 @@ namespace TicketingApp.Controllers
                     if (r.MessageStatus == "success")
                     {
                         var model = new ListItemDataModel();
-                        model.ListData = await f.ListItemData_Get();
-                        return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
+                        model.ListData = await f.ListItemData_GetSearch(data);
+                        return await Task.Run(() => Json(new { isValid = true }));
                     }
                     else
                     {
                         data.Error = r;
-                        return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Form", data) });
+                        return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle}));
                     }
                 }
                 catch (Exception ex)
@@ -700,7 +747,7 @@ namespace TicketingApp.Controllers
                     r.MessageContent = ex.ToString();
                     r.MessageTitle = "Error ";
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Form", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle}));
                 }
             }
             else
@@ -708,7 +755,7 @@ namespace TicketingApp.Controllers
                 r.MessageContent = "State Model tidak valid";
                 r.MessageTitle = "Error ";
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Form", data) });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle}));
             }
         }
 
@@ -717,14 +764,31 @@ namespace TicketingApp.Controllers
         public async Task<IActionResult> ListItemData_Delete(int Id)
         {
             var model = new ListItemDataModel();
-            model.Error = await f.ListItemData_Del(Id);
-            if (model.Error.MessageStatus == "success")
+            try
             {
-                model.Error = null;
+                model.Error = await f.ListItemData_Del(Id);
+                if (model.Error.MessageStatus == "success")
+                {
+                    model.Error = null;
+                    return await Task.Run(() => Json(new { isValid = true }));
+                }
+                else
+                {
+
+                    return await Task.Run(() => Json(new { isValid = false, message = model.Error.MessageContent, title = model.Error.MessageTitle }));
+                }
+            }
+            catch (Exception ex)
+            {
+                var r = new ErrorViewModel();
+                r.MessageContent = ex.ToString();
+                r.MessageTitle = "Error ";
+                r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+                model.Error = r;
+                
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle}));
             }
 
-            model.ListData = await f.ListItemData_Get();
-            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
         }
 
         [HttpPost]
@@ -738,7 +802,7 @@ namespace TicketingApp.Controllers
                 try
                 {
                     model.ListData = await f.ListItemData_GetSearch(data);
-                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
+                    return await Task.Run(() => Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) }));
                 }
                 catch (Exception ex)
                 {
@@ -747,7 +811,7 @@ namespace TicketingApp.Controllers
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                     model.Error = r;
                     model.ListData = await f.ListItemData_Get();
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", data) }));
                 }
             }
             else
@@ -757,7 +821,7 @@ namespace TicketingApp.Controllers
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                 model.Error = r;
                 model.ListData = await f.ListItemData_Get();
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "ListItemData_Table", model) }));
             }
         }
         #endregion
@@ -846,14 +910,12 @@ namespace TicketingApp.Controllers
                     r = await f.RoleMenuData_Save(data);
                     if (r.MessageStatus == "success")
                     {
-                        var model = new RoleMenuDataModel();
-                        model.ListData = await f.RoleMenuData_Get();
-                        return Json(new { isValid = true});
+                        return await Task.Run(() => Json(new { isValid = true}));
                     }
                     else
                     {
                         data.Error = r;
-                        return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) });
+                        return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) }));
                     }
                 }
                 catch (Exception ex)
@@ -861,7 +923,7 @@ namespace TicketingApp.Controllers
                     r.MessageContent = ex.ToString();
                     r.MessageTitle = "Error ";
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) }));
                 }
             }
             else
@@ -869,7 +931,7 @@ namespace TicketingApp.Controllers
                 r.MessageContent = "State Model tidak valid";
                 r.MessageTitle = "Error ";
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Form", data) }));
             }
         }
 
@@ -884,13 +946,12 @@ namespace TicketingApp.Controllers
                 if (model.Error.MessageStatus == "success")
                 {
                     model.Error = null;
-                    model.ListData = await f.RoleMenuData_Get();
-                    return Json(new { isValid = true });
+                    return await Task.Run(() => Json(new { isValid = true }));
                 }
                 else
                 {
                     model.ListData = await f.RoleMenuData_Get();
-                    return Json(new { isValid = false, message = model.Error.MessageContent, title = model.Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) });
+                    return await Task.Run(() => Json(new { isValid = false, message = model.Error.MessageContent, title = model.Error.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) }));
                 }
             }
             catch (Exception ex)
@@ -900,7 +961,7 @@ namespace TicketingApp.Controllers
                 r.MessageTitle = "Error ";
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                 model.Error = r;
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) }));
             }
         }
 
@@ -915,7 +976,7 @@ namespace TicketingApp.Controllers
                 try
                 {
                     model.ListData = await f.RoleMenuData_GetSearch(data);
-                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) });
+                    return await Task.Run(() => Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) }));
                 }
                 catch (Exception ex)
                 {
@@ -924,7 +985,7 @@ namespace TicketingApp.Controllers
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                     model.Error = r;
                     model.ListData = await f.RoleMenuData_Get();
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", data) });
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", data) }));
                 }
             }
             else
@@ -934,7 +995,7 @@ namespace TicketingApp.Controllers
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
                 model.Error = r;
                 model.ListData = await f.RoleMenuData_Get();
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle, html = Helper.RenderRazorViewToString(this, "RoleMenuData_Table", model) }));
             }
         }
 
@@ -948,14 +1009,14 @@ namespace TicketingApp.Controllers
                 try
                 {
                     model = await f.MenuData_GetMenuByIdModule(Id);
-                    return Json(new { isValid = true, model});
+                    return await Task.Run(() => Json(new { isValid = true, model}));
                 }
                 catch (Exception ex)
                 {
                     r.MessageContent = ex.ToString();
                     r.MessageTitle = "Error ";
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle});
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle}));
                 }
             }
             else
@@ -963,7 +1024,7 @@ namespace TicketingApp.Controllers
                 r.MessageContent = "State Model tidak valid";
                 r.MessageTitle = "Error ";
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle }));
             }
         }
 
@@ -977,14 +1038,14 @@ namespace TicketingApp.Controllers
                 try
                 {
                     model = await f.MenuData_GetParent(IdModule,IdMenu,IdPosisi);
-                    return Json(new { isValid = true, model });
+                    return await Task.Run(() => Json(new { isValid = true, model }));
                 }
                 catch (Exception ex)
                 {
                     r.MessageContent = ex.ToString();
                     r.MessageTitle = "Error ";
                     r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                    return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle });
+                    return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle }));
                 }
             }
             else
@@ -992,10 +1053,12 @@ namespace TicketingApp.Controllers
                 r.MessageContent = "State Model tidak valid";
                 r.MessageTitle = "Error ";
                 r.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-                return Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle });
+                return await Task.Run(() => Json(new { isValid = false, message = r.MessageContent, title = r.MessageTitle }));
             }
         }
 
         #endregion
+
+        
     }
 }

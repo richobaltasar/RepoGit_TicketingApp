@@ -1,0 +1,114 @@
+﻿
+@model UserDataModel
+
+@if (Model.Error != null)
+{
+    @await Html.PartialAsync("Error", Model.Error)
+}
+@if(Model.ListData != null)
+{
+<table id="myTable"
+       class="table display no-wrap table table-hover table-striped table-bordered compact  table-responsive"
+       cellspacing="0">
+    <thead class="bg-dark text-light" style="font-family:Calibri;font-size:small;">
+        <tr>
+            <th width="30">no</th>
+            <th style="text-align:center;">Divisi</th>
+            <th style="text-align:center;">Username</th>
+            <th style="text-align:center;">NamaLengkap</th>
+            <th style="text-align:center;">Email</th>
+            <th style="text-align:center;">Gender</th>
+            <th style="text-align:center;">NoHp</th>
+            <th style="text-align:center;">Status</th>
+            <th style="text-align:center;">Posisi</th>
+            <th style="text-align:center;" width="30">Action</th>
+        </tr>
+    </thead>
+    <tbody style="font-size:small;font-family:Calibri;">
+        @{
+            int a = 0;
+            foreach (var item in Model.ListData)
+            {
+                a++;
+                <tr>
+                    <td nowrap align="center">@a</td>
+                    <td nowrap align="left">@item.NamaDivisi</td>
+                    <td align="left">
+                        @**@
+                        <a class="" style="text-align:left;"
+                           href="javascript:showInPopup('@Url.Action("UserData_Form","User",new { id=item.id},Context.Request.Scheme)','Form Modif User Data')">
+                            <img src="~/@item.Photo" width="20" class="img img-circle"/>
+                            @item.username
+                        </a>
+                    </td>
+                    <td nowrap align="left">
+                        @item.NamaLengkap
+                    </td>
+                    <td nowrap align="left">@item.Email</td>
+                    <td nowrap align="center">@item.Gender</td>
+                    <td nowrap align="left">@item.NoHp</td>
+                    <td nowrap align="center" width="30">
+                        @{
+                            if (item.Status == 1)
+                            {
+                                <div class="badge badge-success">Aktif</div>
+                            }
+                            else
+                            {
+                                <div class="badge badge-danger">Non Aktif</div>
+                            }
+                        }
+                    </td>
+                    <td nowrap align="center">@item.NamaPosisi</td>
+                    <td nowrap align="center" width="30">
+                        <form asp-action="UserData_Delete" asp-route-Id="@item.id" onsubmit="return UserData_Delete(this);" class="d-inline">
+                            <button type="submit"
+                                    class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
+                                    title="View">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(function () {
+        var collapsedGroups = {};
+        var table = $('#myTable').DataTable({
+            "info": false,
+            "scrollX": false,
+            "autoWidth": true,
+            "paging": false,
+            searching: false,
+            order: [[1, 'asc']],
+            rowGroup: {
+                // Uses the 'row group' plugin
+                dataSrc: 1,
+                startRender: function (rows, group) {
+                    var collapsed = !!collapsedGroups[group];
+
+                    rows.nodes().each(function (r) {
+                        r.style.display = collapsed ? 'none' : '';
+                    });
+
+                    // Add category name to the <tr>. NOTE: Hardcoded colspan
+                    return $('<tr/>')
+                        .append('<td colspan="10">' + group + ' (' + rows.count() + ')</td>')
+                        .attr('data-name', group)
+                        .toggleClass('collapsed', collapsed);
+                }
+            }
+        });
+        $('#myTable tbody').on('click', 'tr.group-start', function () {
+            var name = $(this).data('name');
+            console.log(name);
+            collapsedGroups[name] = !collapsedGroups[name];
+            table.draw(false);
+        }); 
+    });
+</script>
+}

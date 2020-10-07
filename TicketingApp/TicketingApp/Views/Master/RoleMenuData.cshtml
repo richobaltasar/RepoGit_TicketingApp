@@ -179,18 +179,18 @@
                             success: function (res) {
                                 if (res.isValid) {
                                     $('#RoleMenuData_Search_Id').submit();
-                                    $.notify("Data berhasil dihapus", { globalPosition: 'top center', className: 'success' })
+                                    $.notify("Data berhasil dihapus", { globalPosition: 'top center', className: 'success' });
                                 }
                                 else {
-                                    $.notify('Sorry ' + res.message, { globalPosition: 'top center', className: 'warning' })
+                                    $.notify('Sorry ' + res.message, { globalPosition: 'top center', className: 'warning' });
                                 }
                             },
                             error: function (err) {
-                                $.notify('Sorry ' + err.responseText, { globalPosition: 'top center', className: 'warning' })
+                                $.notify('Sorry ' + err.responseText, { globalPosition: 'top center', className: 'warning' });
                             }
                         })
                     } catch (ex) {
-                        $.notify('Sorry ' + ex.message, { globalPosition: 'top center', className: 'warning' })
+                        $.notify('Sorry ' + ex.message, { globalPosition: 'top center', className: 'warning' });
 
                     }
                     $(".preloader").fadeOut();
@@ -235,7 +235,7 @@
                 }
             //-------------------------------
             // External
-            MenuData_Post = form => {
+            MenuData_Save = form => {
                 try {
                     $(".preloader").fadeIn();
                     var Data = new FormData(form);
@@ -321,6 +321,7 @@
                         });
                     }
                 });
+
                 $('#Filter_IdModule').on('change', function (e) {
                     var optionSelected = $("option:selected", this);
                     var valueSelected = this.value;

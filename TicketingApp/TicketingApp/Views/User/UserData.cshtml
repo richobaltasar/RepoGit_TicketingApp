@@ -1,0 +1,245 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    MasterFunction f = new MasterFunction();
+    var formData = new FormMasterData();
+}
+
+@model UserDataModel
+@{
+    if (Model.Error == null)
+    {
+        <link rel="stylesheet" type="text/css" href="~/assets/datatables/jquery.dataTables.min.css">
+        <script src="~/assets/datatables/jquery.dataTables.min.js"></script>
+
+        <link href="~/assets/datatables/responsive.dataTables.min.css" rel="stylesheet" />
+        <script src="~/assets/datatables/dataTables.responsive.min.js"></script>
+
+        <link href="~/assets/datatables/rowGroup.dataTables.min.css" rel="stylesheet" />
+        <script src="~/assets/datatables/dataTables.rowGroup.min.js"></script>
+        
+        <script src="~/assets/dropify/dropify.min.js"></script>
+        <link href="~/assets/dropify/dropify.min.css" rel="stylesheet" />
+
+        <div class="row page-titles">
+            <div class="col-md-5 align-self-center">
+                <h4 class="text-themecolor">Role Menu Data</h4>
+            </div>
+            <div class="col-md-7 align-self-center text-right">
+                <div class="d-flex justify-content-end align-items-center">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Master</a></li>
+                        <li class="breadcrumb-item active">Role Menu Data</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card rounded">
+                    <div class="card-header">
+                        <button type="button" class="btn btn-info m-l-15"
+                                style="float:right"
+                                onclick="showInPopup('@Url.Action("UserData_Form","User",new { id=0},Context.Request.Scheme)','Form User Data')">
+                            <i class="fa fa-plus-circle"></i> Create New
+                        </button>
+
+                        <button type="button" class="btn btn-outline-info m-l-15"
+                                style="float:right"
+                                data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <i class="fa fa-filter"></i> Set Filter
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="accordionExample" style="margin-top:0px;">
+                            <div class="card">
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <form asp-action="UserData_Search" id="UserData_Search">
+                                            @{
+                                                formData.Template = f.GetFormLayoutForFilter("Form UserData");
+                                                formData.ColField = 3;
+                                                @await Html.PartialAsync("_LayoutFormFilter", formData)
+                                                <button type="submit" class="btn waves-effect waves-light btn-rounded btn-outline-primary">
+                                                    <span class="fa fa-search"></span> Search
+                                                </button>
+                                            }
+                                        </form>
+                                        <hr />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:-30px;">
+                            <div id="view-all">
+                                @await Html.PartialAsync("UserData_Table", Model)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" role="dialog" id="form-modal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-info" style="padding: 10px 10px 10px 10px;">
+                        <p class="modal-title text-white">Modal title</p>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            //---- Action UserData
+            showInPopup = (url, title) => {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (res) {
+                        console.log(res);
+                        $('#form-modal .modal-body').html(res);
+                        $('#form-modal .modal-title').html(title);
+                        $('#form-modal').modal('show');
+                    },
+                    error: function (request, status, error) {
+                        $(".preloader").fadeOut();
+                    }
+                });
+
+            }
+            UserData_Save = form => {
+                try {
+                    $(".preloader").fadeIn();
+                    var Data = new FormData(form);
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action,
+                        data: Data,
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+                            console.log(res);
+                            if (res.isValid) {
+                                $('#UserData_Search').submit();
+                                $('#form-modal .modal-body').html('');
+                                $('#form-modal .modal-title').html('');
+                                $('#form-modal').modal('hide');
+                                $.notify('submited Successfully', { globalPosition: 'top center', className: 'success' })
+                            }
+                            else {
+                                $("#title-error").text(res.title);
+                                $("#message_error").text(res.message);
+                                $("#error-alert").show();
+                                $("#error-alert").fadeTo(10000, 500).slideUp(500, function () {
+                                    $("#error-alert").slideUp(500);
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message);
+                            console.log(err);
+                            $("#title-error").text("Sorry");
+                            $("#message_error").text("ERROR !! " + err.responseText);
+                            $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                                $("#error-alert").slideUp(500);
+                            });
+                        }
+                    })
+                    //to prevent default form submit event
+                    $(".preloader").fadeOut();
+                    return false;
+                } catch (ex) {
+                    console.log(ex)
+                    $(".preloader").fadeOut();
+                    $("#title-error").text("Sorry");
+                    $("#message_error").text("ERROR !! ");
+                    $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                        $("#error-alert").slideUp(500);
+                    });
+                }
+            }
+            UserData_Delete = form => {
+                if (confirm('Are you sure to delete this record ?')) {
+                    try {
+                        $.ajax({
+                            type: 'POST',
+                            url: form.action,
+                            data: new FormData(form),
+                            contentType: false,
+                            processData: false,
+                            success: function (res) {
+                                if (res.isValid) {
+                                    $('#UserData_Search').submit();
+                                    $.notify("Data berhasil dihapus", { globalPosition: 'top center', className: 'success' });
+                                }
+                                else {
+                                    $.notify('Sorry ' + res.message, { globalPosition: 'top center', className: 'warning' });
+                                }
+                            },
+                            error: function (err) {
+                                $.notify('Sorry ' + err.responseText, { globalPosition: 'top center', className: 'warning' });
+                            }
+                        })
+                    } catch (ex) {
+                        $.notify('Sorry ' + ex.message, { globalPosition: 'top center', className: 'warning' });
+
+                    }
+                    $(".preloader").fadeOut();
+                }
+
+                //prevent default form submit event
+                return false;
+            }
+            
+            //-------------------------------
+            $(function () {
+                $("#UserData_Search").submit(function (e){
+                    try {
+                        e.preventDefault();
+                        var Data = new FormData(document.querySelector('form'))
+                        $.ajax({
+                            type: 'POST',
+                            url: document.querySelector('form').action,
+                            data: Data,
+                            contentType: false,
+                            processData: false,
+                            success: function (res) {
+                                if (res.isValid) {
+                                    $('#view-all').html(res.html)
+                                }
+                                else {
+                                    alert(res.title + "/n" + res.message);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                var err = eval("(" + xhr.responseText + ")");
+                                alert(err.Message);
+                            }
+                        })
+                        //to prevent default form submit event
+                        return false;
+                    }
+                    catch (ex) {
+                        $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                            $("#error-alert").slideUp(500);
+                        });
+                    }
+                });
+            });
+
+        </script>
+    }
+    else
+    {
+        @await Html.PartialAsync("Error", Model.Error)
+    }
+}

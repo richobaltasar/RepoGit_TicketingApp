@@ -137,6 +137,9 @@
     <Folder Include="dbo\Stored Procedures\Sp_Web\FormData" />
     <Folder Include="dbo\Stored Procedures\Sp_Web\ListItemData" />
     <Folder Include="dbo\Stored Procedures\Sp_Web\RoleMenuData" />
+    <Folder Include="dbo\Tables\TableMaster\Done" />
+    <Folder Include="dbo\Tables\DataLog\Done" />
+    <Folder Include="dbo\Stored Procedures\Sp_Web\UserData" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Functions\Roman.sql">
@@ -2144,18 +2147,6 @@
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
-    <Build Include="dbo\Tables\TableMaster\Role_MenuTree.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="dbo\Tables\TableMaster\DataMenu.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
-    <Build Include="dbo\Tables\TableMaster\DataModule.sql">
-      <AnsiNulls>On</AnsiNulls>
-      <QuotedIdentifier>On</QuotedIdentifier>
-    </Build>
     <Build Include="dbo\Tables\TableMaster\DataParam.sql">
       <AnsiNulls>On</AnsiNulls>
       <QuotedIdentifier>On</QuotedIdentifier>
@@ -2169,7 +2160,6 @@
       <QuotedIdentifier>On</QuotedIdentifier>
     </Build>
     <None Include="Scripts\Insert Data Master Form.sql" />
-    <Build Include="dbo\Tables\TableMaster\Master_Form.sql" />
     <Build Include="dbo\Tables\DataLog\DataInventory.sql" />
     <Build Include="dbo\Tables\Master_ListItem.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\SP_LoginProc.sql" />
@@ -2205,6 +2195,25 @@
     </Build>
     <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_GetMenuByIdModule.sql" />
     <Build Include="dbo\Stored Procedures\Sp_Web\MenuData\SP_MenuData_GetParent.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\ModulData\SP_ModuleData_GetSearch_1.sql" />
+    <Build Include="dbo\Tables\TableMaster\Done\DataMenu.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="dbo\Tables\TableMaster\Done\DataModule.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="dbo\Tables\TableMaster\Done\Role_MenuTree.sql">
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
+    <Build Include="dbo\Tables\TableMaster\Done\Master_Form.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\UserData\SP_UserData_Get.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\UserData\SP_UserData_Save.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\UserData\SP_UserData_Del.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\UserData\SP_UserData_GetById.sql" />
+    <Build Include="dbo\Stored Procedures\Sp_Web\UserData\SP_UserData_GetSearch.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

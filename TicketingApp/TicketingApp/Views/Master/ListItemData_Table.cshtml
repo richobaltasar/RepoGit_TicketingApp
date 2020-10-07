@@ -35,7 +35,7 @@
                     <td nowrap align="left">@item.Text</td>
                     <td nowrap align="left">@item.Value</td>
                     <td nowrap align="center" width="30">
-                        <form asp-action="ListItemData_Delete" asp-route-Id="@item.id" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
+                        <form asp-action="ListItemData_Delete" asp-route-Id="@item.id" onsubmit="return ListItemData_Delete(this);" class="d-inline">
                             <button type="submit"
                                     class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
                                     title="View">
@@ -93,32 +93,4 @@
             table.draw(false);
         }); 
     });
-
-    jQueryAjaxDelete = form => {
-        if (confirm('Are you sure to delete this record ?')) {
-            try {
-                $.ajax({
-                    type: 'POST',
-                    url: form.action,
-                    data: new FormData(form),
-                    contentType: false,
-                    processData: false,
-                    success: function (res) {
-                        console.log(res);
-                        $('#view-all').html(res.html);
-                        $.notify('deleted Successfully', { globalPosition: 'top center', className: 'danger' })
-                    },
-                    error: function (err) {
-                        console.log(err)
-                    }
-                })
-            } catch (ex) {
-                console.log(ex)
-            }
-        }
-
-        //prevent default form submit event
-        return false;
-    }
-
 </script>

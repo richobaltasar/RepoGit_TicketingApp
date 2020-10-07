@@ -64,7 +64,7 @@
                                 <i class="fa fa-link"></i>
                             </a>
                         }
-                        <form asp-action="MenuData_Delete" asp-route-Id="@item.idMenu" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
+                        <form asp-action="MenuData_Delete" asp-route-Id="@item.idMenu" onsubmit="return MenuData_Delete(this);" class="d-inline">
                             <button type="submit"
                                     class="m-portlet__nav-link btn m-btn m-btn--hover-warning m-btn--icon m-btn--icon-only m-btn--pill"
                                     title="View">
@@ -119,33 +119,6 @@
         }); 
     });
 
-
-
-    jQueryAjaxDelete = form => {
-        if (confirm('Are you sure to delete this record ?')) {
-            try {
-                $.ajax({
-                    type: 'POST',
-                    url: form.action,
-                    data: new FormData(form),
-                    contentType: false,
-                    processData: false,
-                    success: function (res) {
-                        console.log(res);
-                        $('#view-all').html(res.html);
-                        $.notify('deleted Successfully', { globalPosition: 'top center', className: 'danger' })
-                    },
-                    error: function (err) {
-                        console.log(err)
-                    }
-                })
-            } catch (ex) {
-                console.log(ex)
-            }
-        }
-
-        //prevent default form submit event
-        return false;
-    }
+    
 
 </script>

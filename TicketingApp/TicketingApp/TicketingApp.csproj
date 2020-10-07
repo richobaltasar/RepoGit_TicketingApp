@@ -5,8 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Views\User\" />
-    <Folder Include="wwwroot\assets\images\" />
+    <Folder Include="wwwroot\assets\datepicker\" />
+    <Folder Include="wwwroot\assets\bootstrap-select\" />
+    <Folder Include="wwwroot\assets\PhoneNumberLib\" />
     <Folder Include="wwwroot\FileMaster\" />
     <Folder Include="wwwroot\FileMenu\" />
   </ItemGroup>

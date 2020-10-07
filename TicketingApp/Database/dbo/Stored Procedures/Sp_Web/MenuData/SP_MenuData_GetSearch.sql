@@ -1,13 +1,17 @@
 ﻿CREATE PROCEDURE [dbo].[SP_MenuData_GetSearch]
-	@idMenu bigint,
 	@NamaMenu nvarchar(max),
-	@Action nvarchar(max),
 	@Controller nvarchar(max),
-	@Platform nvarchar(max),
-	@Img nvarchar(max),
-	@Status bigint
+	@Platform nvarchar(max)
 AS
-
-select*from DataMenu
-where NamaMenu like '%'+@NamaMenu+'%' and Platform like '%'+@Platform+'%'
-and Controller like '%'+@Controller+'%'
+if(@Platform !='')
+begin
+	select*from DataMenu
+	where REPLACE(RTRIM(LTRIM(NamaMenu)),' ','') like '%'+REPLACE(RTRIM(LTRIM(@NamaMenu)),' ','')+'%' and REPLACE(RTRIM(LTRIM(Platform)),' ','') = REPLACE(RTRIM(LTRIM(@Platform)),' ','')
+	and REPLACE(RTRIM(LTRIM(Controller)),' ','') like '%'+REPLACE(RTRIM(LTRIM(@Controller)),' ','')+'%'
+end
+else
+begin
+	select*from DataMenu
+	where REPLACE(RTRIM(LTRIM(NamaMenu)),' ','') like '%'+REPLACE(RTRIM(LTRIM(@NamaMenu)),' ','')+'%' 
+	and REPLACE(RTRIM(LTRIM(Controller)),' ','') like '%'+REPLACE(RTRIM(LTRIM(@Controller)),' ','')+'%'
+end

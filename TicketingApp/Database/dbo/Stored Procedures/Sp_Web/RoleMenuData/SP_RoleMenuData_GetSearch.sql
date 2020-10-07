@@ -1,9 +1,9 @@
 ﻿CREATE PROCEDURE [dbo].[SP_RoleMenuData_GetSearch]
-	@IdRole bigint,
+	--@IdRole bigint,
 	@IdModule bigint,
-	@Posisi bigint,
-	@IdParent bigint,
-	@Urutan bigint,
+	--@Posisi bigint,
+	--@IdParent bigint,
+	--@Urutan bigint,
 	@IdMenu bigint
 AS
 	if(@IdModule=0 and @IdMenu=0)

@@ -59,7 +59,7 @@
                             <div class="card">
                                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <form asp-action="MenuData_Search" onsubmit="return jQueryAjaxSearch(this)">
+                                        <form asp-action="MenuData_Search" id="MenuData_Search_Id">
                                             @{
                                                 formData.Template = f.GetFormLayoutForFilter("Form Master Menu");
                                                 formData.ColField = 3;
@@ -117,45 +117,16 @@
                 });
 
             }
-            jQueryAjaxSearch = form => {
+
+            MenuData_Save = form => {
                 try {
                     $(".preloader").fadeIn();
                     var Data = new FormData(form);
-                    $.ajax({
-                        type: 'POST',
-                        url: form.action,
-                        data: Data,
-                        contentType: false,
-                        processData: false,
-                        success: function (res) {
-                            console.log(res);
-                            if (res.isValid) {
-                                $('#view-all').html(res.html)
-                            }
-                            else {
-                                alert(res.title + "/n" + res.message);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            var err = eval("(" + xhr.responseText + ")");
-                            alert(err.Message);
-                        }
-                    })
-                    //to prevent default form submit event
-                    $(".preloader").fadeOut();
-                    return false;
-                } catch (ex) {
-                    console.log(ex)
-                    alert("Sorry Error : " + "/n" + ex.message);
-                }
-            }
-            MenuData_Post = form => {
-                try {
-                    $(".preloader").fadeIn();
-                    var Data = new FormData(form);
+
                     if ($('#File_Img')[0].files.length > 0) {
                         Data.append('File_Img', $('#File_Img')[0].files[0]);
                     }
+
                     $.ajax({
                         type: 'POST',
                         url: form.action,
@@ -165,7 +136,7 @@
                         success: function (res) {
                             console.log(res);
                             if (res.isValid) {
-                                $('#view-all').html(res.html)
+                                $('#MenuData_Search_Id').submit();
                                 $('#form-modal .modal-body').html('');
                                 $('#form-modal .modal-title').html('');
                                 $('#form-modal').modal('hide');
@@ -204,6 +175,71 @@
                     });
                 }
             }
+            MenuData_Delete = form => {
+                if (confirm('Are you sure to delete this record ?')) {
+                    try {
+                        $.ajax({
+                            type: 'POST',
+                            url: form.action,
+                            data: new FormData(form),
+                            contentType: false,
+                            processData: false,
+                            success: function (res) {
+                                if (res.isValid) {
+                                    $('#MenuData_Search_Id').submit();
+                                    $.notify("Data berhasil dihapus", { globalPosition: 'top center', className: 'success' });
+                                }
+                                else {
+                                    $.notify('Sorry ' + res.message, { globalPosition: 'top center', className: 'warning' })
+                                }
+                            },
+                            error: function (err) {
+                                $.notify('Sorry ' + err.responseText, { globalPosition: 'top center', className: 'warning' });
+                            }
+                        })
+                    } catch (ex) {
+                        $.notify('Sorry ' + ex.message, { globalPosition: 'top center', className: 'warning' });
+                    }
+                }
+
+                //prevent default form submit event
+                return false;
+            }
+            $(function () {
+                $("#MenuData_Search_Id").submit(function (e) {
+                    try {
+                        e.preventDefault();
+                        var Data = new FormData(document.querySelector('form'))
+                        console.log(Data);
+                        $.ajax({
+                            type: 'POST',
+                            url: document.querySelector('form').action,
+                            data: Data,
+                            contentType: false,
+                            processData: false,
+                            success: function (res) {
+                                if (res.isValid) {
+                                    $('#view-all').html(res.html)
+                                }
+                                else {
+                                    alert(res.title + "/n" + res.message);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                var err = eval("(" + xhr.responseText + ")");
+                                alert(err.Message);
+                            }
+                        })
+                        //to prevent default form submit event
+                        return false;
+                    }
+                    catch (ex) {
+                        $("#error-alert").fadeTo(3000, 500).slideUp(500, function () {
+                            $("#error-alert").slideUp(500);
+                        });
+                    }
+                });
+            });
         </script>
     }
     else

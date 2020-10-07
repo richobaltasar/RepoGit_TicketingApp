@@ -188,6 +188,17 @@ BEGIN
 			) q
 			order by q.Text
 		end
-		
+		else if(@Data ='ListKota')
+		begin
+            select*from 
+			(
+				select '' Text, '' Value
+				union all
+
+				select distinct Kabupaten_Kota Text , Kabupaten_Kota Value from DataKotaPostalCode
+
+			) q
+			order by q.Text
+		end
 	end
 END

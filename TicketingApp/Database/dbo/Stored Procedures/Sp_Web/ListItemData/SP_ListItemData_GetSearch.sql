@@ -1,10 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[SP_ListItemData_GetSearch]
-	@id int,
-	@ListName nvarchar(max),
-	@Urutan nvarchar(max),
-	@Text nvarchar(max),
-	@Value nvarchar(max)
+	
+	@ListName nvarchar(max)
 AS
 	select*from Master_ListItem
 	where 
-	ListName like '%'+@ListName+'%'
+	REPLACE(RTRIM(LTRIM(ListName)),' ','') like '%'+ REPLACE(RTRIM(LTRIM(@ListName)),' ','')+'%'

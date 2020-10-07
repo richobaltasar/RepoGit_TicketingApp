@@ -17,6 +17,7 @@ namespace TicketingApp.Function
         GlobalFunction GF = new GlobalFunction();
         public SqlConnection conn = new SqlConnection();
         public SqlCommand cmd = new SqlCommand();
+
         #region Module Data
         public async Task<List<ModuleData>> ModuleData_Get()
         {
@@ -199,6 +200,89 @@ namespace TicketingApp.Function
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+
+        public async Task<List<ModuleData>> ModuleData_GetSearch(ModuleData Data)
+        {
+            var res = new List<ModuleData>();
+            try
+            {
+                var filter = GetFormLayoutForFilter("Form Master CRUD");
+                conn.ConnectionString = Config.ConStr;
+                using (var connection = conn)
+                {
+                    connection.Open();
+                    string sql = "exec SP_ModuleData_GetSearch ";
+                    
+
+                    Type type1 = Data.GetType();
+                    PropertyInfo[] props1 = type1.GetProperties();
+                    foreach(var d in filter)
+                    {
+                        foreach (var p in props1)
+                        {
+                            if (null != p && p.CanWrite)
+                            {
+                                if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile" && p.Name == d.Id)
+                                {
+                                    string param = "";
+                                    if (p.PropertyType.Name.ToString() == "String")
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    }
+                                    else
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "=" + val.ToString() + ",";
+                                    }
+                                    sql = sql + param;
+                                }
+                            }
+                        }
+                    }
+
+                    
+                    sql = sql.RemoveLast(",");
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.CommandTimeout = 0;
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                var d = new ModuleData();
+                                Type type = d.GetType();
+                                PropertyInfo[] props = type.GetProperties();
+                                foreach (var p in props)
+                                {
+                                    if (null != p && p.CanWrite)
+                                    {
+                                        if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                                        {
+                                            if (p.PropertyType.Name.ToString() == "Int32")
+                                            {
+                                                int val = reader[p.Name].ToString().AsInt() ?? 0;
+                                                p.SetValue(d, val, null);
+                                            }
+                                            else
+                                            {
+                                                p.SetValue(d, reader[p.Name].ToString(), null);
+                                            }
+                                        }
+                                    }
+                                }
+                                res.Add(d);
                             }
                         }
                     }
@@ -412,6 +496,7 @@ namespace TicketingApp.Function
             var res = new List<MenuData>();
             try
             {
+                var filter = GetFormLayoutForFilter("Form Master Menu");
                 conn.ConnectionString = Config.ConStr;
                 using (var connection = conn)
                 {
@@ -419,28 +504,30 @@ namespace TicketingApp.Function
                     string sql = "exec SP_MenuData_GetSearch ";
                     Type type1 = Data.GetType();
                     PropertyInfo[] props1 = type1.GetProperties();
-                    foreach (var p in props1)
+                    foreach (var d in filter)
                     {
-                        if (null != p && p.CanWrite)
+                        foreach (var p in props1)
                         {
-                            if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                            if (null != p && p.CanWrite)
                             {
-                                string param = "";
-                                if (p.PropertyType.Name.ToString() == "String")
+                                if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile" && p.Name == d.Id)
                                 {
-                                    var val = p.GetValue(Data) ?? "";
-                                    param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    string param = "";
+                                    if (p.PropertyType.Name.ToString() == "String")
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    }
+                                    else
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "=" + val.ToString() + ",";
+                                    }
+                                    sql = sql + param;
                                 }
-                                else
-                                {
-                                    var val = p.GetValue(Data) ?? "";
-                                    param = "@" + p.Name + "=" + val.ToString() + ",";
-                                }
-                                sql = sql + param;
                             }
                         }
                     }
-
                     sql = sql.RemoveLast(",");
                     using (var command = new SqlCommand(sql, connection))
                     {
@@ -482,7 +569,6 @@ namespace TicketingApp.Function
             }
             return res;
         }
-
         public async Task<List<MenuData>> MenuData_GetMenuByIdModule(int IdModule)
         {
             var res = new List<MenuData>();
@@ -535,7 +621,6 @@ namespace TicketingApp.Function
             }
             return res;
         }
-
         public async Task<List<SelectListItem>> MenuData_GetParent(int IdModule, int IdMenu, int IdPosisi)
         {
             var res = new List<SelectListItem>();
@@ -581,31 +666,36 @@ namespace TicketingApp.Function
             var res = new List<FormData>();
             try
             {
+                var filter = GetFormLayoutForFilter("Form FormData");
                 conn.ConnectionString = Config.ConStr;
                 using (var connection = conn)
                 {
                     connection.Open();
                     string sql = "exec SP_FormData_GetSearch ";
+
                     Type type1 = Data.GetType();
                     PropertyInfo[] props1 = type1.GetProperties();
-                    foreach (var p in props1)
+                    foreach (var d in filter)
                     {
-                        if (null != p && p.CanWrite)
+                        foreach (var p in props1)
                         {
-                            if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                            if (null != p && p.CanWrite)
                             {
-                                string param = "";
-                                if (p.PropertyType.Name.ToString() == "String")
+                                if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile" && p.Name == d.Id)
                                 {
-                                    var val = p.GetValue(Data) ?? "";
-                                    param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    string param = "";
+                                    if (p.PropertyType.Name.ToString() == "String")
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    }
+                                    else
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "=" + val.ToString() + ",";
+                                    }
+                                    sql = sql + param;
                                 }
-                                else
-                                {
-                                    var val = p.GetValue(Data) ?? "";
-                                    param = "@" + p.Name + "=" + val.ToString() + ",";
-                                }
-                                sql = sql + param;
                             }
                         }
                     }
@@ -1132,6 +1222,7 @@ namespace TicketingApp.Function
             var res = new List<ListItemData>();
             try
             {
+                var filter = GetFormLayoutForFilter("Form ListItemData");
                 conn.ConnectionString = Config.ConStr;
                 using (var connection = conn)
                 {
@@ -1139,24 +1230,27 @@ namespace TicketingApp.Function
                     string sql = "exec SP_ListItemData_GetSearch ";
                     Type type1 = Data.GetType();
                     PropertyInfo[] props1 = type1.GetProperties();
-                    foreach (var p in props1)
+                    foreach (var d in filter)
                     {
-                        if (null != p && p.CanWrite)
+                        foreach (var p in props1)
                         {
-                            if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                            if (null != p && p.CanWrite)
                             {
-                                string param = "";
-                                if (p.PropertyType.Name.ToString() == "String")
+                                if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile" && p.Name==d.Id)
                                 {
-                                    var val = p.GetValue(Data) ?? "";
-                                    param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    string param = "";
+                                    if (p.PropertyType.Name.ToString() == "String")
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "='" + val.ToString() + "',";
+                                    }
+                                    else
+                                    {
+                                        var val = p.GetValue(Data) ?? "";
+                                        param = "@" + p.Name + "=" + val.ToString() + ",";
+                                    }
+                                    sql = sql + param;
                                 }
-                                else
-                                {
-                                    var val = p.GetValue(Data) ?? "";
-                                    param = "@" + p.Name + "=" + val.ToString() + ",";
-                                }
-                                sql = sql + param;
                             }
                         }
                     }
@@ -1440,6 +1534,7 @@ namespace TicketingApp.Function
             var res = new List<RoleMenuData>();
             try
             {
+                var filter = GetFormLayoutForFilter("Form RoleMenuData");
                 conn.ConnectionString = Config.ConStr;
                 using (var connection = conn)
                 {
@@ -1447,31 +1542,33 @@ namespace TicketingApp.Function
                     string sql = "exec SP_RoleMenuData_GetSearch ";
                     Type type1 = Data.GetType();
                     PropertyInfo[] props1 = type1.GetProperties();
-                    foreach (var p in props1)
+                    foreach (var d in filter)
                     {
-                        if (null != p && p.CanWrite)
+                        foreach (var p in props1)
                         {
-                            if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile")
+                            if (null != p && p.CanWrite)
                             {
-                                string param = "";
-                                if (p.PropertyType.Name.ToString() == "String")
+                                if (p.Name != "" && p.Name != "Error" && p.PropertyType.Name.ToString() != "IFormFile" && p.Name == d.Id)
                                 {
-                                    if(p.GetValue(Data)!= null)
+                                    string param = "";
+                                    if (p.PropertyType.Name.ToString() == "String")
+                                    {
+                                        if (p.GetValue(Data) != null)
+                                        {
+                                            var val = p.GetValue(Data) ?? "";
+                                            param = "@" + p.Name + "='" + val.ToString() + "',";
+                                        }
+                                    }
+                                    else
                                     {
                                         var val = p.GetValue(Data) ?? "";
-                                        param = "@" + p.Name + "='" + val.ToString() + "',";
+                                        param = "@" + p.Name + "=" + val.ToString() + ",";
                                     }
+                                    sql = sql + param;
                                 }
-                                else
-                                {
-                                    var val = p.GetValue(Data) ?? "";
-                                    param = "@" + p.Name + "=" + val.ToString() + ",";
-                                }
-                                sql = sql + param;
                             }
                         }
                     }
-
                     sql = sql.RemoveLast(",");
                     using (var command = new SqlCommand(sql, connection))
                     {
