@@ -1,2 +1,3 @@
-# RepoGit_TicketingApp
-Ayoo pasti bisa buat lebih baik
+# Ticketing System
+Aplikasi ini untuk menghandle tiket wahana, theme park dan bisnis yg menggunakan entrance gate.
+
